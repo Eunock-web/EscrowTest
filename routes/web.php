@@ -17,7 +17,7 @@ Route::controller(ProductController::class)
         Route::get('/{productId}', 'SearchProduct');
         Route::delete('/{productId}', 'DeleteProduct');
         Route::put('/{productId}', 'updateProduct')->name('updateProducts');
-    });
+    })->middleware('auth');
 
 // Routes pour l'authentification
 Route::controller(AuthController::class)

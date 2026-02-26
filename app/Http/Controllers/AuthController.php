@@ -2,24 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    //Foncton pour la page register
-    public function showRegister(){
+    // Foncton pour la page register
+    public function showRegister()
+    {
         return view('auth.register');
     }
 
-    //Fonction pour afficher la page login
-    public function showLogin(){
+    // Fonction pour afficher la page login
+    public function showLogin()
+    {
         return view('auth.login');
     }
-
 
     public function register(RegisterRequest $request)
     {
@@ -29,7 +30,7 @@ class AuthController extends Controller
         $validatedData['isAuth'] = true;
         $user = User::create($validatedData);
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->back()->with('error', 'Une erreur est survenue lors de la création du compte.');
         }
 
@@ -59,7 +60,7 @@ class AuthController extends Controller
         return view('dashboard');
     }
 
-    //Fonction pour le logout
+    // Fonction pour le logout
     public function logout(Request $request)
     {
         Auth::logout();

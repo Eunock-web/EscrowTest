@@ -740,7 +740,13 @@
     <div
         style="position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:84px 16px 40px;">
 
-        <!-- ══════ STEP 1 — Compte ══════ -->
+        <form action="{{ url('auth/register') }}" method="post" id="regForm" style="width:100%; display:flex; flex-direction:column; align-items:center;">
+            @csrf
+            <input type="hidden" name="avatar" id="hidden_avatar" value="{{ old('avatar', 'av1') }}">
+            <input type="hidden" name="specialite" id="hidden_specialite" value="{{ old('specialite', '') }}">
+            <input type="hidden" name="plan" id="hidden_plan" value="{{ old('plan', 'gratuit') }}">
+
+            <!-- ══════ STEP 1 — Compte ══════ -->
         <div id="step1" style="width:100%;max-width:480px;animation:fadeUp .5s ease both;">
             <div style="text-align:center;margin-bottom:28px;">
                 <h1 style="font-size:2.2rem;font-weight:800;color:#fff;margin-bottom:6px;">Créer votre compte <span
@@ -751,7 +757,7 @@
             <div class="card" style="padding:32px;">
                 <!-- Social -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px;">
-                    <button class="btn-soc"
+                    <button class="btn-soc" type="button"
                         onclick="this.style.opacity='.5';this.style.pointerEvents='none';setTimeout(()=>location.href='#',1600)">
                         <svg width="17" height="17" viewBox="0 0 24 24">
                             <path fill="#4285f4"
@@ -765,7 +771,7 @@
                         </svg>
                         Google
                     </button>
-                    <button class="btn-soc"
+                    <button class="btn-soc" type="button"
                         onclick="this.style.opacity='.5';this.style.pointerEvents='none';setTimeout(()=>location.href='#',1600)">
                         <svg width="17" height="17" fill="#e2e8f0" viewBox="0 0 24 24">
                             <path
@@ -791,128 +797,81 @@
                 @endif
 
 
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                    <form action="{{ url('auth/register') }}" method="post" id="regForm" class="flex flex-col gap-8">
-                        @csrf
-                        <input type="hidden" name="avatar" id="hidden_avatar" value="{{ old('avatar', 'av1') }}">
-                        <input type="hidden" name="specialite" id="hidden_specialite" value="{{ old('specialite', '') }}">
-                        <input type="hidden" name="plan" id="hidden_plan" value="{{ old('plan', 'gratuit') }}">
-                        <!-- Names -->
-                                <input class="fi @error('firstname') border-red-500 @enderror" type="text" id="fn" name="firstname"
-                                    placeholder="Prénom" oninput="vField(this,'wFn',2);chk1()"
-                                    autocomplete="given-name" value="{{ old('firstname') }}" />
-                            </div>
-                            @error('firstname') <span style="color:#f87171;font-size:10px;margin-top:2px;">{{ $message }}</span> @enderror
-                        </div>
-                        <div>
-                            <div class="iw @error('lastname') e @enderror" id="wLn">
-                                <div class="ii"><svg width="15" height="15" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg></div>
-                                <input class="fi" type="text" id="ln" name="lastname"
-                                    placeholder="Nom" oninput="vField(this,'wLn',2);chk1()"
-                                    autocomplete="family-name" value="{{ old('lastname') }}" />
-                            </div>
-                            @error('lastname') <span style="color:#f87171;font-size:10px;margin-top:2px;">{{ $message }}</span> @enderror
-                        </div>
-                    </div>
 
+
+                    <div id="step1-content" class="flex flex-col gap-5">
+                        <!-- Names -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div>
+                                <div class="iw @error('firstname') e @enderror" id="wFn">
+                                    <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
+                                    <input class="fi @error('firstname') border-red-500 @enderror" type="text" id="fn" name="firstname" placeholder="Prénom" oninput="vField(this,'wFn',2);chk1()" autocomplete="given-name" value="{{ old('firstname') }}" />
+                                </div>
+                                @error('firstname') <span style="color:#f87171;font-size:10px;margin-top:2px;display:block;">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <div class="iw @error('lastname') e @enderror" id="wLn">
+                                    <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg></div>
+                                    <input class="fi @error('lastname') border-red-500 @enderror" type="text" id="ln" name="lastname" placeholder="Nom" oninput="vField(this,'wLn',2);chk1()" autocomplete="family-name" value="{{ old('lastname') }}" />
+                                </div>
+                                @error('lastname') <span style="color:#f87171;font-size:10px;margin-top:2px;display:block;">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <!-- Email -->
                         <div>
                             <div class="iw @error('email') e @enderror" id="wEm">
-                                <div class="ii"><svg width="15" height="15" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg></div>
-                                <input class="fi" type="email" id="em" placeholder="vous@email.com"
-                                    oninput="vEmail();chk1()" autocomplete="email" name="email" value="{{ old('email') }}" />
+                                <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></div>
+                                <input class="fi" type="email" id="em" placeholder="vous@email.com" oninput="vEmail();chk1()" autocomplete="email" name="email" value="{{ old('email') }}" />
                             </div>
-                            @error('email') <span style="color:#f87171;font-size:10px;margin-top:2px;">{{ $message }}</span> @enderror
+                            @error('email') <span style="color:#f87171;font-size:10px;margin-top:2px;display:block;">{{ $message }}</span> @enderror
                         </div>
 
                         <!-- Password -->
                         <div>
                             <div class="iw @error('password') e @enderror" id="wPw">
-                                <div class="ii"><svg width="15" height="15" fill="none"
-                                        stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                    </svg></div>
-                                <input class="fi" type="password" id="pw" placeholder="Mot de passe"
-                                    style="padding-right:46px;" oninput="checkStr();chk1()"
-                                    autocomplete="new-password" name="password" />
-                                <button class="eyebtn" onclick="togglePw('pw')" type="button"><svg width="15"
-                                        height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg></button>
+                                <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></div>
+                                <input class="fi" type="password" id="pw" placeholder="Mot de passe" style="padding-right:46px;" oninput="checkStr();chk1()" autocomplete="new-password" name="password" />
+                                <button class="eyebtn" onclick="togglePw('pw')" type="button"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></button>
                             </div>
-                            @error('password') <span style="color:#f87171;font-size:10px;margin-top:2px;">{{ $message }}</span> @enderror
+                            @error('password') <span style="color:#f87171;font-size:10px;margin-top:2px;display:block;">{{ $message }}</span> @enderror
                         </div>
 
+                        <div>
                             <!-- Strength -->
                             <div style="display:flex;gap:4px;margin:8px 0 3px;">
-                                <div class="sbar">
-                                    <div class="sbar-fill" id="sb1"></div>
-                                </div>
-                                <div class="sbar">
-                                    <div class="sbar-fill" id="sb2"></div>
-                                </div>
-                                <div class="sbar">
-                                    <div class="sbar-fill" id="sb3"></div>
-                                </div>
-                                <div class="sbar">
-                                    <div class="sbar-fill" id="sb4"></div>
-                                </div>
+                                <div class="sbar"><div class="sbar-fill" id="sb1"></div></div>
+                                <div class="sbar"><div class="sbar-fill" id="sb2"></div></div>
+                                <div class="sbar"><div class="sbar-fill" id="sb3"></div></div>
+                                <div class="sbar"><div class="sbar-fill" id="sb4"></div></div>
                             </div>
-                            <div style="font-size:11px;color:#64748b;" id="strLabel">Min. 8 caractères, 1 majuscule,
-                                1 chiffre</div>
+                            <div style="font-size:11px;color:#64748b;" id="strLabel">Min. 8 caractères, 1 majuscule, 1 chiffre</div>
                         </div>
+
                         <!-- Confirm -->
-                        <div class="iw" id="wCo">
-                            <div class="ii"><svg width="15" height="15" fill="none"
-                                    stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                </svg></div>
-                            <input class="fi" type="password" id="co"
-                                placeholder="Confirmer le mot de passe" style="padding-right:46px;"
-                                oninput="checkConfirm();chk1()" autocomplete="new-password"
-                                name="password_confirmation" />
-                            <button class="eyebtn" onclick="togglePw('co')" type="button"><svg width="15"
-                                    height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                </svg></button>
+                        <div>
+                            <div class="iw" id="wCo">
+                                <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg></div>
+                                <input class="fi" type="password" id="co" placeholder="Confirmer le mot de passe" style="padding-right:46px;" oninput="checkConfirm();chk1()" autocomplete="new-password" name="password_confirmation" />
+                                <button class="eyebtn" onclick="togglePw('co')" type="button"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></button>
+                            </div>
+                            <div id="errConf" style="font-size:11px;color:#f87171;display:none;padding-left:2px;">Les mots de passe ne correspondent pas.</div>
                         </div>
-                        <div id="errConf" style="font-size:11px;color:#f87171;display:none;padding-left:2px;">Les
-                            mots de passe ne correspondent pas.</div>
 
                         <!-- CGU -->
-                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;"
-                            onclick="toggleCgu()">
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;" onclick="toggleCgu()">
                             <div class="chk" id="cguBox" style="margin-top:1px;"></div>
-                            <span style="font-size:13px;color:#64748b;line-height:1.5;">J'accepte les <a
-                                    href="tarifs.html" style="color:#a78bfa;text-decoration:underline;"
-                                    onclick="event.stopPropagation()">CGU</a> et la <a href="#"
-                                    style="color:#a78bfa;text-decoration:underline;"
-                                    onclick="event.stopPropagation()">Politique de confidentialité</a></span>
+                            <span style="font-size:13px;color:#64748b;line-height:1.5;">J'accepte les <a href="tarifs.html" style="color:#a78bfa;text-decoration:underline;" onclick="event.stopPropagation()">CGU</a> et la <a href="#" style="color:#a78bfa;text-decoration:underline;" onclick="event.stopPropagation()">Politique de confidentialité</a></span>
                         </label>
+
+
+                        <button class="btn" id="btn1" type="button" onclick="goStep(2)" disabled style="width:100%;padding:14px;border-radius:13px;font-size:14px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;">
+                            Continuer → Personnaliser le profil
+                        </button>
+                    </div>
                 </div>
 
-                <button class="btn" id="btn1" onclick="goStep(2)" disabled
-                    style="width:100%;padding:14px;border-radius:13px;font-size:14px;margin-top:20px;display:flex;align-items:center;justify-content:center;gap:8px;">
-                    Continuer → Personnaliser le profil
-                </button>
-            </div>
-
-            <p style="text-align:center;margin-top:18px;color:#64748b;font-size:13px;">
+                <p style="text-align:center;margin-top:18px;color:#64748b;font-size:13px;">
                 Déjà un compte ? <a href="/login" style="color:#a78bfa;font-weight:600;text-decoration:none;">Se
                     connecter →</a>
             </p>
@@ -982,22 +941,22 @@
                             style="font-size:11px;font-weight:600;color:#94a3b8;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">
                             Spécialité (max. 3)</div>
                         <div style="display:flex;flex-wrap:wrap;gap:8px;" id="specs">
-                            <button class="spec" onclick="toggleSpec(this)">🎨 UI Design</button>
-                            <button class="spec" onclick="toggleSpec(this)">💻 Dev</button>
-                            <button class="spec" onclick="toggleSpec(this)">🖼 Illustration</button>
-                            <button class="spec" onclick="toggleSpec(this)">🎬 Motion</button>
-                            <button class="spec" onclick="toggleSpec(this)">🎵 Audio</button>
-                            <button class="spec" onclick="toggleSpec(this)">📚 Formation</button>
-                            <button class="spec" onclick="toggleSpec(this)">🔮 3D</button>
-                            <button class="spec" onclick="toggleSpec(this)">📱 Mobile</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">🎨 UI Design</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">💻 Dev</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">🖼 Illustration</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">🎬 Motion</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">🎵 Audio</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">📚 Formation</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">🔮 3D</button>
+                            <button class="spec" type="button" onclick="toggleSpec(this)">📱 Mobile</button>
                         </div>
                     </div>
                 </div>
 
                 <div style="display:flex;gap:10px;margin-top:24px;">
-                    <button class="btn-outline" onclick="goStep(1)"
+                    <button class="btn-outline" type="button" onclick="goStep(1)"
                         style="flex:1;padding:13px;border-radius:13px;font-size:13px;">← Retour</button>
-                    <button class="btn" onclick="goStep(3)"
+                    <button class="btn" type="button" onclick="goStep(3)"
                         style="flex:2;padding:14px;border-radius:13px;font-size:14px;">Choisir mon plan →</button>
                 </div>
             </div>
@@ -1100,9 +1059,9 @@
                 </label>
 
                 <div style="display:flex;gap:10px;">
-                    <button class="btn-outline" onclick="goStep(2)"
+                    <button class="btn-outline" type="button" onclick="goStep(2)"
                         style="flex:1;padding:13px;border-radius:13px;font-size:13px;">← Retour</button>
-                    <button class="btn" id="finalBtn" onclick="finalCreate()"
+                    <button class="btn" id="finalBtn" type="button" onclick="finalCreate()"
                         style="flex:2;padding:14px;border-radius:13px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:8px;">
                         <span id="finalTxt">Créer mon compte</span>
                         <div class="spinner" id="finalSpin" style="display:none;"></div>
@@ -1112,9 +1071,8 @@
                 <p style="text-align:center;font-size:11px;color:#3f3f5a;margin-top:14px;">En créant votre compte, vous
                     acceptez nos CGU.</p>
             </div>
-
-            </form>
         </div>
+    </form>
 
         <!-- ══════ SUCCESS ══════ -->
         <div id="stepOK" style="display:none;width:100%;max-width:440px;text-align:center;padding-top:20px;">
@@ -1204,7 +1162,8 @@
             const oldSpec = '{{ old('specialite') }}';
             if(oldSpec) {
                 document.querySelectorAll('.spec').forEach(btn => {
-                    if(specMap[btn.textContent.trim()] === oldSpec) {
+                    const btnVal = specMap[btn.textContent.trim()];
+                    if(btnVal === oldSpec) {
                         btn.classList.add('on');
                     }
                 });
