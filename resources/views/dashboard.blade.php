@@ -16,11 +16,11 @@
             min-height: 100vh;
         }
         h1, h2, h3, h4 { font-family: 'Syne', sans-serif; }
-        
+
         .g { background: linear-gradient(135deg, #a78bfa, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.06); }
         .glass-hover:hover { background: rgba(255, 255, 255, 0.05); border-color: rgba(124, 58, 237, 0.3); }
-        
+
         /* Sidebar */
         .sidebar {
             width: 260px;
@@ -34,7 +34,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .nav-link {
             display: flex;
             align-items: center;
@@ -77,7 +77,7 @@
     <!-- Sidebar -->
     <aside class="sidebar glass">
         <div class="flex items-center gap-3 mb-10 px-2">
-            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-[#7c3aed] to-[#06b6d4] flex items-center justify-center">
+            <div class="w-8 h-8 rounded-lg bg-linear-to-br from-[#7c3aed] to-[#06b6d4] flex items-center justify-center">
                 <svg width="18" height="18" fill="#fff" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>
             </div>
             <span class="text-xl font-bold font-syne text-white tracking-tight">Pixel<span class="g">Vault</span></span>
@@ -126,21 +126,21 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="ml-[260px] p-8">
+    <main class="ml-65 p-8">
         <!-- Header -->
         <header class="flex items-center justify-between mb-10 animate-fade" style="animation-delay: 0.1s;">
             <div>
                 <h2 class="text-3xl font-extrabold text-white">Salut, {{ Auth::user()->firstname }} <span class="animate-pulse text-2xl">👋</span></h2>
                 <p class="text-slate-500 mt-1">Voici l'état de votre compte créateur PixelVault.</p>
             </div>
-            
+
             <div class="flex items-center gap-4">
                 <button class="glass p-2.5 rounded-xl glass-hover relative">
                     <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
                     <span class="absolute top-2 right-2 w-2 h-2 bg-purple-500 rounded-full border-2 border-[#050509]"></span>
                 </button>
                 <div class="flex items-center gap-3 glass p-1.5 pr-4 rounded-xl border border-white/10">
-                    <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20 uppercase">
+                    <div class="w-10 h-10 rounded-lg bg-linear-to-tr from-purple-500 to-blue-500 flex items-center justify-center font-bold text-white shadow-lg shadow-purple-500/20 uppercase">
                         {{ substr(Auth::user()->firstname, 0, 1) }}{{ substr(Auth::user()->lastname, 0, 1) }}
                     </div>
                     <div class="hidden md:block">
@@ -162,7 +162,7 @@
                     +12%
                 </div>
             </div>
-            
+
             <div class="glass p-6 rounded-2xl relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl group-hover:bg-blue-600/20 transition-all"></div>
                 <p class="text-sm text-slate-500 font-medium mb-1">Ventes du mois</p>
@@ -215,7 +215,7 @@
                             <p class="text-[10px] text-slate-600 uppercase">Aujourd'hui, 14:24</p>
                         </div>
                     </div>
-                    
+
                     <div class="flex items-center justify-between p-4 rounded-2xl glass-hover border border-transparent transition-all">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">🖼️</div>
@@ -249,9 +249,9 @@
             <!-- Profile Sidebar / Quick Stats -->
             <div class="glass rounded-3xl p-8 animate-fade" style="animation-delay: 0.4s;">
                 <h4 class="text-xl font-bold text-white mb-6">Profil Créateur</h4>
-                
+
                 <div class="text-center mb-8">
-                    <div class="w-24 h-24 rounded-2xl bg-gradient-to-tr from-purple-500 to-blue-500 mx-auto flex items-center justify-center text-3xl font-bold shadow-2xl shadow-purple-500/30 mb-4 ring-4 ring-white/5">
+                    <div class="w-24 h-24 rounded-2xl bg-linear-to-tr from-purple-500 to-blue-500 mx-auto flex items-center justify-center text-3xl font-bold shadow-2xl shadow-purple-500/30 mb-4 ring-4 ring-white/5">
                         {{ substr(Auth::user()->firstname, 0, 1) }}{{ substr(Auth::user()->lastname, 0, 1) }}
                     </div>
                     <h5 class="text-lg font-bold text-white">{{ Auth::user()->firstname }} {{ Auth::user()->lastname }}</h5>
