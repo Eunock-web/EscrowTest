@@ -78,6 +78,7 @@ Route::prefix('admin')->group(function () {
 // Admin Protected Routes
 Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 });
