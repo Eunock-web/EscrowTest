@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Creator\AnalyticsController;
+use App\Http\Controllers\Creator\SalesController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\AuthController;
@@ -9,17 +12,17 @@ Route::get('/', function () {
 });
 
 // Routes la manipulation des produits
-Route::controller(ProductController::class)
+Route::middleware(['auth', 'user.creator'])
     ->prefix('products')
     ->group(function () {
-        Route::get('/', 'index')->name('allProduct');
-        Route::get('/add', 'showCreate')->name('createProduct');
-        Route::post('/add', 'create')->name('storeProduct');
-        Route::get('/{productId}/edit', 'updateProduct')->name('editProduct');
-        Route::match(['put', 'post'], '/{productId}', 'updateProduct')->name('updateProducts');
-        Route::get('/{productId}', 'searchProduct');
-        Route::delete('/{productId}', 'deleteProduct')->name('deleteProduct');
-    })->middleware('auth');
+        Route::get('/', [ProductController::class, 'index'])->name('allProduct');
+        Route::get('/add', [ProductController::class, 'showCreate'])->name('createProduct');
+        Route::post('/add', [ProductController::class, 'create'])->name('storeProduct');
+        Route::get('/{productId}/edit', [ProductController::class, 'updateProduct'])->name('editProduct');
+        Route::match(['put', 'post'], '/{productId}', [ProductController::class, 'updateProduct'])->name('updateProducts');
+        Route::get('/{productId}', [ProductController::class, 'searchProduct']);
+        Route::delete('/{productId}', [ProductController::class, 'deleteProduct'])->name('deleteProduct');
+    });
 
 // Routes pour l'authentification
 Route::controller(AuthController::class)
@@ -31,16 +34,16 @@ Route::controller(AuthController::class)
         Route::post('/login', 'login')->name('login.store');
         Route::post('/logout', 'logout')->name('logout');
     });
+        
 
-use App\Http\Controllers\Creator\AnalyticsController;
-use App\Http\Controllers\Creator\SalesController;
-use App\Http\Controllers\ProfileController;
+Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard')->middleware(['auth', 'user.creator']);
 
-Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard')->middleware('auth');
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'user.creator'])->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/sales', [SalesController::class, 'index'])->name('sales');
+});
+
+Route::middleware('auth')->group(function () {
     Route::get('/settings', [ProfileController::class, 'index'])->name('settings');
     Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
 });

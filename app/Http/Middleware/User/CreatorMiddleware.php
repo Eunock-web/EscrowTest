@@ -5,8 +5,9 @@ namespace App\Http\Middleware\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
-class AdminController
+class CreatorMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,10 +16,10 @@ class AdminController
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->input('role') !== 'admin'){
-            return redirect('/login');
+        if (Auth::check() && Auth::user()->role === 'createur') {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect()->route('login');
     }
 }
