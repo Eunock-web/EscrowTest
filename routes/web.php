@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminAuthController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -65,4 +67,17 @@ Route::get('/createurs', function (){
 
 Route::get('/tarifs', function (){
     return view('Products.tarifs');
+});
+
+// Admin Authentication (Separate)
+Route::prefix('admin')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login']);
+});
+
+// Admin Protected Routes
+Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 });
