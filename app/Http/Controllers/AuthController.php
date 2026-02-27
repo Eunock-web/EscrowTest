@@ -57,7 +57,20 @@ class AuthController extends Controller
 
     public function dashboard()
     {
-        return view('dashboard');
+        $userId = Auth::id();
+        
+        $totalRevenue = \App\Models\Sale::where('seller_id', $userId)->sum('amount');
+        $totalSales = \App\Models\Sale::where('seller_id', $userId)->count();
+        $totalProducts = \App\Models\Product::where('user_id', $userId)->count();
+        $totalViews = 0; // Mock until tracking is implemented
+
+        $recentSales = \App\Models\Sale::where('seller_id', $userId)
+            ->with(['product', 'buyer'])
+            ->latest()
+            ->take(3)
+            ->get();
+
+        return view('dashboard', compact('totalRevenue', 'totalSales', 'totalProducts', 'totalViews', 'recentSales'));
     }
 
     // Fonction pour le logout

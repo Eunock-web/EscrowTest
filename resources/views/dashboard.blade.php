@@ -32,7 +32,7 @@
         <div class="glass p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-purple-600/10 rounded-full blur-2xl group-hover:bg-purple-600/20 transition-all"></div>
             <p class="text-sm text-slate-500 font-medium mb-1">Revenus Totaux</p>
-            <h3 class="text-3xl font-extrabold text-white mb-2">1,280<span class="g">€</span></h3>
+            <h3 class="text-3xl font-extrabold text-white mb-2">{{ number_format($totalRevenue, 2) }}<span class="g">€</span></h3>
             <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/></svg>
                 +12%
@@ -41,8 +41,8 @@
 
         <div class="glass p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-blue-600/10 rounded-full blur-2xl group-hover:bg-blue-600/20 transition-all"></div>
-            <p class="text-sm text-slate-500 font-medium mb-1">Ventes du mois</p>
-            <h3 class="text-3xl font-extrabold text-white mb-2">42</h3>
+            <p class="text-sm text-slate-500 font-medium mb-1">Ventes totales</p>
+            <h3 class="text-3xl font-extrabold text-white mb-2">{{ $totalSales }}</h3>
             <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
                 <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"/></svg>
                 +8%
@@ -52,7 +52,7 @@
         <div class="glass p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-cyan-600/10 rounded-full blur-2xl group-hover:bg-cyan-600/20 transition-all"></div>
             <p class="text-sm text-slate-500 font-medium mb-1">Vues Produits</p>
-            <h3 class="text-3xl font-extrabold text-white mb-2">3.4k</h3>
+            <h3 class="text-3xl font-extrabold text-white mb-2">{{ $totalViews }}</h3>
             <div class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
                 Stable ce mois
             </div>
@@ -60,10 +60,10 @@
 
         <div class="glass p-6 rounded-2xl relative overflow-hidden group">
             <div class="absolute -right-4 -top-4 w-24 h-24 bg-orange-600/10 rounded-full blur-2xl group-hover:bg-orange-600/20 transition-all"></div>
-            <p class="text-sm text-slate-500 font-medium mb-1">Score Créateur</p>
-            <h3 class="text-3xl font-extrabold text-white mb-2">98<span class="text-purple-500 text-lg">/100</span></h3>
-            <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
-                Excellence
+            <p class="text-sm text-slate-500 font-medium mb-1">Mes Produits</p>
+            <h3 class="text-3xl font-extrabold text-white mb-2">{{ $totalProducts }}</h3>
+            <div class="flex items-center gap-1.5 text-xs font-bold text-orange-400">
+                En ligne
             </div>
         </div>
     </div>
@@ -74,51 +74,29 @@
         <div class="lg:col-span-2 glass rounded-3xl p-8 animate-fade" style="animation-delay: 0.3s;">
             <div class="flex items-center justify-between mb-8">
                 <h4 class="text-xl font-bold text-white">Ventes Récentes</h4>
-                <a href="#" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">Voir tout →</a>
+                <a href="{{ route('sales') }}" class="text-sm text-purple-400 hover:text-purple-300 transition-colors">Voir tout →</a>
             </div>
 
             <div class="space-y-6">
-                <div class="flex items-center justify-between p-4 rounded-2xl glass-hover border border-transparent transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">📦</div>
-                        <div>
-                            <p class="text-sm font-bold text-white">3D iPhone 15 Pro Mockup</p>
-                            <p class="text-xs text-slate-500">Acheté par @design_flow</p>
+                @forelse($recentSales as $sale)
+                    <div class="flex items-center justify-between p-4 rounded-2xl glass-hover border border-transparent transition-all">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">📦</div>
+                            <div>
+                                <p class="text-sm font-bold text-white">{{ $sale->product->nom }}</p>
+                                <p class="text-xs text-slate-500">Acheté par @ {{ $sale->buyer->pseudo }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-bold text-emerald-400">+{{ number_format($sale->amount, 2) }}€</p>
+                            <p class="text-[10px] text-slate-600 uppercase">{{ $sale->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold text-emerald-400">+19.00€</p>
-                        <p class="text-[10px] text-slate-600 uppercase">Aujourd'hui, 14:24</p>
+                @empty
+                    <div class="text-center py-10">
+                        <p class="text-slate-500 text-sm">Aucune vente récente.</p>
                     </div>
-                </div>
-
-                <div class="flex items-center justify-between p-4 rounded-2xl glass-hover border border-transparent transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">🖼️</div>
-                        <div>
-                            <p class="text-sm font-bold text-white">Abstract Gradient Pack</p>
-                            <p class="text-xs text-slate-500">Acheté par @artisan_web</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold text-emerald-400">+15.00€</p>
-                        <p class="text-[10px] text-slate-600 uppercase">Hier, 18:05</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-between p-4 rounded-2xl glass-hover border border-transparent transition-all">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center text-xl">🎬</div>
-                        <div>
-                            <p class="text-sm font-bold text-white">Lottie Animation Pack</p>
-                            <p class="text-xs text-slate-500">Acheté par @startup_x</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold text-emerald-400">+35.00€</p>
-                        <p class="text-[10px] text-slate-600 uppercase">Hier, 10:42</p>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
 
@@ -152,9 +130,9 @@
                 </div>
             </div>
 
-            <button class="w-full mt-8 bg-white/5 border border-white/10 hover:bg-white/10 transition-all rounded-xl py-3 text-sm font-bold text-white">
+            <a href="{{ route('settings') }}" class="block w-full mt-8 bg-white/5 border border-white/10 hover:bg-white/10 transition-all rounded-xl py-3 text-sm font-bold text-white text-center">
                 Éditer mon Profil
-            </button>
+            </a>
         </div>
     </div>
 @endsection

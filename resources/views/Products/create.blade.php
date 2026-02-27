@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'PixelVault — Créer un produit')
+@section('title', isset($product) ? 'PixelVault — Modifier le produit' : 'PixelVault — Créer un produit')
 
 @section('styles')
 <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -180,7 +180,7 @@
         <!-- ══════ PANEL 1 — Informations ══════ -->
         <div id="p1" class="panel">
             <div class="mb-8">
-                <h1 class="text-3xl font-extrabold text-white mb-1">Informations <span class="g">générales</span></h1>
+                <h1 class="text-3xl font-extrabold text-white mb-1">{{ isset($product) ? 'Modifier' : 'Informations' }} <span class="g">{{ isset($product) ? 'le produit' : 'générales' }}</span></h1>
                 <p class="text-slate-500 text-sm">Présentez votre produit de façon claire et attractive.</p>
             </div>
 
@@ -189,7 +189,7 @@
                 <div class="lbl mb-4">Titre du produit <span class="text-red-500">*</span></div>
                 <div class="iw mb-4" id="wTitle">
                     <div class="ii"><svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg></div>
-                    <input class="fi" type="text" id="prodTitle" name="nom" placeholder="ex: SaaS Dashboard Pro — Kit UI Figma complet" maxlength="80" oninput="onTitle(this)"/>
+                    <input class="fi" type="text" id="prodTitle" name="nom" value="{{ $product->nom ?? '' }}" placeholder="ex: SaaS Dashboard Pro — Kit UI Figma complet" maxlength="80" oninput="onTitle(this)"/>
                 </div>
                 <div class="flex justify-between items-center text-[10px] text-slate-600">
                     <span>Soyez précis et spécifique.</span>
@@ -208,7 +208,7 @@
                 </div>
                 <div class="p-6">
                     <label class="lbl">Description <span class="text-red-500">*</span></label>
-                    <textarea class="fi min-h-[160px]" id="desc" name="description" placeholder="Décrivez votre produit..." oninput="cntDesc()"></textarea>
+                    <textarea class="fi min-h-[160px]" id="desc" name="description" placeholder="Décrivez votre produit..." oninput="cntDesc()">{{ $product->description ?? '' }}</textarea>
                     <div class="flex justify-between mt-2 text-[10px] text-slate-600">
                         <span>Min. 100 caractères recommandés.</span>
                         <span id="descCnt">0 car.</span>
@@ -218,7 +218,7 @@
 
             <!-- Category -->
             <div class="surf p-8 mb-10">
-                <input type="hidden" name="categorie_id" id="categorie_id">
+                <input type="hidden" name="categorie_id" id="categorie_id" value="{{ $product->categorie_id ?? '' }}">
                 <label class="lbl mb-6 text-center">Catégorie <span class="text-red-500">*</span></label>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4" id="catGrid">
                     @foreach($categories as $category)
@@ -232,7 +232,7 @@
             </div>
 
             <div class="flex justify-end">
-                <button class="btn px-8 py-3 rounded-xl text-sm" onclick="goTo(2)">Continuer →</button>
+                <button class="btn px-8 py-3 rounded-xl text-sm" onclick="goTo(2)">{{ isset($product) ? 'Suivant' : 'Continuer' }} →</button>
             </div>
         </div>
 
@@ -247,16 +247,16 @@
                 <label class="lbl mb-4">Image de couverture <span class="text-red-500">*</span></label>
                 <div class="uzone p-12" id="coverZone">
                     <input type="file" name="image" id="prodImage" accept="image/*" onchange="loadCover(this)"/>
-                    <div id="coverEmpty" class="text-center">
+                    <div id="coverEmpty" class="text-center" style="{{ isset($product->url_image) ? 'display:none;' : '' }}">
                         <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mx-auto mb-4">
                             <svg width="20" height="20" fill="none" stroke="#a78bfa" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
                         <p class="text-sm font-bold text-slate-300">Glissez votre image</p>
                         <p class="text-xs text-slate-500 mt-1">PNG, JPG ou WEBP (Max 5Mo)</p>
                     </div>
-                    <div id="coverLoaded" style="display:none;" class="text-center">
+                    <div id="coverLoaded" style="{{ isset($product->url_image) ? 'display:block;' : 'display:none;' }}" class="text-center">
                         <div class="text-emerald-400 text-2xl mb-2">✓</div>
-                        <p class="text-xs font-bold text-emerald-400" id="coverFn">Image chargée</p>
+                        <p class="text-xs font-bold text-emerald-400" id="coverFn">{{ isset($product->url_image) ? 'Image actuelle conservée' : 'Image chargée' }}</p>
                     </div>
                 </div>
             </div>
@@ -301,7 +301,7 @@
                     <label class="lbl">Prix de vente (€)</label>
                     <div class="pfield mb-6">
                         <div class="ppfx">€</div>
-                    <input class="pinp" type="number" id="price" name="prix" placeholder="0.00" oninput="calcEarnings()"/>
+                        <input class="pinp" type="number" id="price" name="prix" value="{{ $product->prix ?? '' }}" placeholder="0.00" oninput="calcEarnings()"/>
                     </div>
 
                     <div class="grid grid-cols-3 gap-4">
@@ -375,7 +375,7 @@
             <div class="flex justify-between items-center">
                 <button class="btn-out px-6 py-2.5 rounded-xl text-xs" onclick="goTo(3)">← Retour</button>
                 <button class="btn px-10 py-4 rounded-xl text-sm flex items-center gap-3 shadow-xl shadow-purple-500/30" id="pubBtn" onclick="publish()">
-                    <span>🚀 Publier le produit</span>
+                    <span>{{ isset($product) ? '💾 Enregistrer les modifications' : '🚀 Publier le produit' }}</span>
                     <div class="spinner" id="pubSpin" style="display:none;"></div>
                 </button>
             </div>
@@ -386,11 +386,11 @@
              <div class="suc-ring mx-auto mb-6">
                 <svg width="36" height="36" viewBox="0 0 40 40" fill="none"><path class="chk-svg" d="M10 20 L17 27 L30 13" stroke="#34d399" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
              </div>
-             <h2 class="text-4xl font-extrabold text-white mb-2">Produit <span class="g">publié !</span></h2>
-             <p class="text-slate-500 mb-10" id="okTitle">Votre création numérique est maintenant sur PixelVault.</p>
+              <h2 class="text-4xl font-extrabold text-white mb-2">{{ isset($product) ? 'Produit modifié !' : 'Produit publié !' }}</h2>
+             <p class="text-slate-500 mb-10" id="okTitle">{{ isset($product) ? 'Vos modifications ont été enregistrées avec succès.' : 'Votre création numérique est maintenant sur PixelVault.' }}</p>
              <div class="flex justify-center gap-4">
                  <a href="{{ route('allProduct') }}" class="btn px-8 py-3 rounded-xl text-sm">Voir mes produits</a>
-                 <button onclick="location.reload()" class="btn-out px-8 py-3 rounded-xl text-sm">En ajouter un autre</button>
+                 <button  class="btn-out px-8 py-3 rounded-xl text-sm"><a href="{{ route('createProduct') }}">En ajouter un autre</a></button>
              </div>
         </div>
     </div>
@@ -398,7 +398,8 @@
 
 @section('scripts')
 <script>
-    let curStep=1,selCat='',selCatEmoji='',selLic='p',pubOpt='now',hasCover=false,hasFile=false;
+    let curStep=1,selCat='',selCatEmoji='',selLic='p',pubOpt='now',hasCover={{ isset($product) ? 'true' : 'false' }},hasFile=false;
+    const productId = {{ $product->id ?? 'null' }};
 
     function goTo(n){
         [1,2,3,4,'OK'].forEach(i=>{const el=document.getElementById('p'+i);if(el)el.style.display='none';});
@@ -439,7 +440,29 @@
         selCatEmoji=emoji;
         document.getElementById('categorie_id').value = id;
         document.getElementById('prevCatBadge').textContent=name.toUpperCase();
+        selCat = name;
     }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        if(productId) {
+            const catId = document.getElementById('categorie_id').value;
+            const catEl = document.querySelector(`.cat[onclick*="${catId}"]`);
+            if(catEl) catEl.click();
+            
+            // Trigger pre-population for preview
+            onTitle(document.getElementById('prodTitle'));
+            cntDesc();
+            calcEarnings();
+
+            @if(isset($product->url_image))
+                const d = document.getElementById('prevCover');
+                d.style.backgroundImage = 'url(/storage/{{ $product->url_image }})';
+                d.style.backgroundSize = 'cover';
+                d.style.backgroundPosition = 'center';
+                document.getElementById('prevEmoji').style.display = 'none';
+            @endif
+        }
+    });
 
     function loadCover(inp){
         if(!inp.files||!inp.files[0])return;
@@ -507,7 +530,7 @@
         const price = document.getElementById('price').value;
         const image = document.getElementById('prodImage').files[0];
 
-        if(!title || !desc || !catId || !price || !image){
+        if(!title || !desc || !catId || !price || (!image && !productId)){
             alert('Veuillez remplir tous les champs obligatoires.');
             return;
         }
@@ -519,14 +542,20 @@
         formData.append('description', desc);
         formData.append('categorie_id', catId);
         formData.append('prix', price);
-        formData.append('image', image);
-        formData.append('stock', 999); // Valeur par défaut pour l'instant
+        if(image) formData.append('image', image);
+        formData.append('stock', 999); 
+        
+        if(productId) {
+            formData.append('_method', 'PUT');
+        }
 
         try {
-            const response = await fetch("{{ route('storeProduct') }}", {
+            const url = productId ? `/products/${productId}` : "{{ route('storeProduct') }}";
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
                 },
                 body: formData
             });

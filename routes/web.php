@@ -18,7 +18,7 @@ Route::controller(ProductController::class)
         Route::get('/{productId}/edit', 'updateProduct')->name('editProduct');
         Route::match(['put', 'post'], '/{productId}', 'updateProduct')->name('updateProducts');
         Route::get('/{productId}', 'searchProduct');
-        Route::delete('/{productId}', 'deleteProduct');
+        Route::delete('/{productId}', 'deleteProduct')->name('deleteProduct');
     })->middleware('auth');
 
 // Routes pour l'authentification
@@ -32,7 +32,18 @@ Route::controller(AuthController::class)
         Route::post('/logout', 'logout')->name('logout');
     });
 
+use App\Http\Controllers\Creator\AnalyticsController;
+use App\Http\Controllers\Creator\SalesController;
+use App\Http\Controllers\ProfileController;
+
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/sales', [SalesController::class, 'index'])->name('sales');
+    Route::get('/settings', [ProfileController::class, 'index'])->name('settings');
+    Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
+});
 
 
 

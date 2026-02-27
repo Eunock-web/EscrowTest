@@ -73,10 +73,11 @@
                             </p>
 
                             <div class="flex items-center gap-2 pt-4 border-t border-white/5">
-                                <a href="{{ route('updateProducts', $product->id) }}" class="flex-1 text-center py-2.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-all">
+                            <div class="flex items-center gap-2 pt-4 border-t border-white/5">
+                                <a href="{{ route('editProduct', $product->id) }}" class="flex-1 text-center py-2.5 bg-white/5 hover:bg-white/10 text-white text-xs font-bold rounded-lg transition-all">
                                     Éditer
                                 </a>
-                                <button class="p-2.5 bg-red-400/10 hover:bg-red-400/20 text-red-400 rounded-lg transition-all group/delete">
+                                <button onclick="confirmDelete({{ $product->id }})" class="p-2.5 bg-red-400/10 hover:bg-red-400/20 text-red-400 rounded-lg transition-all group/delete" id="delete-btn-{{ $product->id }}">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>
@@ -96,4 +97,43 @@
             </div>
         @endif
     </div>
+@endsection
+
+@section('scripts')
+<script>
+    async function confirmDelete(id) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) return;
+
+        const btn = document.getElementById('delete-btn-' + id);
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        try {
+            const response = await fetch(`/products/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Supprimer l'élément de la grille avec une petite animation
+                const card = btn.closest('.glass');
+                card.style.transform = 'scale(0.9)';
+                card.style.opacity = '0';
+                setTimeout(() => card.remove(), 400);
+            } else {
+                alert('Erreur lors de la suppression.');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Une erreur réseau est survenue.');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    }
+</script>
 @endsection
