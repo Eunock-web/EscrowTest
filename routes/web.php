@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Creator\AnalyticsController;
 use App\Http\Controllers\Creator\SalesController;
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ProductController;
@@ -48,11 +49,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
 });
 
-
-
-Route::get('/explorer', function (){
-    return view('Products.explorer');
+// Routes pour le client
+Route::middleware(['auth', 'user.client'])->group(function () {
+    Route::get('/mes-achats', [ClientController::class, 'purchases'])->name('client.purchases');
 });
+
+// Routes publiques / mixtes
+Route::get('/explorer', [ClientController::class, 'index'])->name('explorer');
+Route::get('/products/{id}', [ClientController::class, 'show'])->name('product.show');
 
 
 Route::get('/createurs', function (){

@@ -52,4 +52,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
         ];
     }
+
+    public function purchases()
+    {
+        return $this->hasMany(Sale::class, 'buyer_id');
+    }
 }
