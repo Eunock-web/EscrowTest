@@ -567,7 +567,7 @@
           Les <span class="grad-text">créateurs</span>
         </h1>
         <p class="anim-fade-up delay-3 text-slate-400">
-          <span id="resultCount" class="text-white font-medium">847</span> créateurs de talent sur PixelVault
+          <span id="resultCount" class="text-white font-medium">{{ $totalCreators }}</span> créateurs de talent sur PixelVault
         </p>
       </div>
       <div class="anim-fade-up delay-4 flex gap-3">
@@ -603,7 +603,7 @@
         <svg class="w-5 h-5 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
       </div>
       <div>
-        <div class="font-display text-white font-800 text-2xl">847</div>
+        <div class="font-display text-white font-800 text-2xl">{{ $totalCreators }}</div>
         <div class="text-slate-500 text-xs">Créateurs actifs</div>
       </div>
     </div>
@@ -612,7 +612,7 @@
         <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
       </div>
       <div>
-        <div class="font-display text-white font-800 text-2xl">2.4k</div>
+        <div class="font-display text-white font-800 text-2xl">{{ $totalProducts }}</div>
         <div class="text-slate-500 text-xs">Produits publiés</div>
       </div>
     </div>
@@ -621,7 +621,7 @@
         <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
       </div>
       <div>
-        <div class="font-display text-white font-800 text-2xl">98k€</div>
+        <div class="font-display text-white font-800 text-2xl">{{ number_format($totalRevenue / 1000, 1) }}k€</div>
         <div class="text-slate-500 text-xs">Reversé aux créateurs</div>
       </div>
     </div>
@@ -802,7 +802,7 @@
           <div class="relative z-10">
             <div class="text-2xl mb-2">🚀</div>
             <div class="font-display text-white font-700 text-base mb-2">Partagez votre talent</div>
-            <p class="text-slate-400 text-xs leading-relaxed mb-4">Rejoignez 847 créateurs et monétisez vos ressources digitales. Commission de 70% sur chaque vente.</p>
+            <p class="text-slate-400 text-xs leading-relaxed mb-4">Rejoignez {{ $totalCreators }} créateurs et monétisez vos ressources digitales. Commission de 70% sur chaque vente.</p>
             <div class="flex items-center gap-2 mb-3">
               <div class="flex -space-x-2">
                 <div class="w-6 h-6 rounded-full border-2 border-[#111118] bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center text-white text-xs">S</div>

@@ -61,9 +61,7 @@ Route::get('/explorer', [ClientController::class, 'index'])->name('explorer');
 Route::get('/products/{id}', [ClientController::class, 'show'])->name('product.show');
 
 
-Route::get('/createurs', function (){
-    return view('Products.createurs');
-});
+Route::get('/createurs', [ClientController::class, 'creators'])->name('creators');
 
 Route::get('/tarifs', function (){
     return view('Products.tarifs');
