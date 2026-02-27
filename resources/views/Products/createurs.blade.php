@@ -583,13 +583,13 @@
 
     <!-- Filter pills -->
     <div class="anim-fade-up delay-5 flex gap-2 overflow-x-auto pb-2" style="scrollbar-width:none">
-      <button class="cat-pill active text-sm px-4 py-2 rounded-full text-slate-400">Tous</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">🎨 UI/UX Design</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">💻 Développement</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">📚 Formateurs</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">🖼 Illustrateurs</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">🎬 Motion</button>
-      <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">🎵 Audio</button>
+      <button class="cat-pill {{ !request('specialite') ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="">Tous</button>
+      <button class="cat-pill {{ request('specialite') == 'uidesign' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="uidesign">🎨 UI/UX Design</button>
+      <button class="cat-pill {{ request('specialite') == 'dev' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="dev">💻 Développement</button>
+      <button class="cat-pill {{ request('specialite') == 'formation' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="formation">📚 Formateurs</button>
+      <button class="cat-pill {{ request('specialite') == 'illustration' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="illustration">🖼 Illustrateurs</button>
+      <button class="cat-pill {{ request('specialite') == 'motion' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="motion">🎬 Motion</button>
+      <button class="cat-pill {{ request('specialite') == 'audio' ? 'active' : '' }} text-sm px-4 py-2 rounded-full text-slate-400" data-spec="audio">🎵 Audio</button>
       <button class="cat-pill text-sm px-4 py-2 rounded-full text-slate-400">⭐ Top créateurs</button>
     </div>
   </div>
@@ -915,41 +915,74 @@ function toggleFollow(btn) {
 }
 
 /* ─── CREATORS DATA ─── */
-const creators = [
-  { id:1,  name:'Sophie Martin',    initials:'S', grad:'from-violet-600 to-cyan-500',   role:'UI/UX Designer & Illustratrice', verified:true,  products:48, sales:'2.1k', followers:'8.4k', rating:4.9, reviews:312, years:'3 ans',
-    specialties:['Figma','UI Design','3D Icons'], coverColor:'from-violet-900/60 to-cyan-900/40', badge:null, bio:'Designer spécialisée dans la création d\'interfaces utilisateur élégantes.' },
-  { id:2,  name:'Marcus Chen',      initials:'M', grad:'from-cyan-500 to-sky-600',       role:'Motion Designer & Développeur',  verified:true,  products:76, sales:'5.2k', followers:'14k',  rating:5.0, reviews:487, years:'5 ans',
-    specialties:['Framer','React','Motion'],     coverColor:'from-cyan-900/60 to-sky-900/40',    badge:'👑 Top',  bio:'Senior Motion Designer primé, créateur du Motion UI Library.' },
-  { id:3,  name:'Karim Benali',     initials:'K', grad:'from-amber-500 to-orange-500',   role:'Développeur Full Stack',         verified:true,  products:34, sales:'1.8k', followers:'5.9k', rating:4.8, reviews:198, years:'2 ans',
-    specialties:['Next.js','TypeScript','APIs'], coverColor:'from-amber-900/60 to-orange-900/40',badge:null,     bio:'Développeur full-stack passionné par les outils pour développeurs.' },
-  { id:4,  name:'Amina Diallo',     initials:'A', grad:'from-rose-500 to-pink-600',      role:'Illustratrice & Branding',       verified:true,  products:29, sales:'1.2k', followers:'7.1k', rating:4.9, reviews:143, years:'4 ans',
-    specialties:['Illustration','Branding','SVG'],coverColor:'from-rose-900/60 to-pink-900/40', badge:'🌟 New',  bio:'Illustratrice primée spécialisée dans le branding et les identités visuelles.' },
-  { id:5,  name:'Pierre Dubois',    initials:'P', grad:'from-emerald-500 to-teal-600',   role:'Formateur & Développeur',        verified:false, products:22, sales:'0.9k', followers:'3.4k', rating:4.7, reviews:89,  years:'1 an',
-    specialties:['Cours','Figma','Tailwind'],    coverColor:'from-emerald-900/60 to-teal-900/40',badge:null,     bio:'Formateur autodidacte, créateur de cours sur le design et le développement.' },
-  { id:6,  name:'Yuki Tanaka',      initials:'Y', grad:'from-indigo-500 to-purple-600',  role:'UI Designer & Framer Expert',    verified:true,  products:41, sales:'3.1k', followers:'11k',  rating:5.0, reviews:276, years:'4 ans',
-    specialties:['Framer','Webflow','CSS'],      coverColor:'from-indigo-900/60 to-purple-900/40',badge:'🔥 Hot', bio:'Experte Framer et Webflow, connue pour ses animations spectaculaires.' },
-  { id:7,  name:'Lisa Torres',      initials:'L', grad:'from-fuchsia-500 to-pink-500',   role:'Motion Designer & After Effects', verified:true,  products:18, sales:'0.7k', followers:'2.8k', rating:4.6, reviews:56,  years:'1 an',
-    specialties:['After Effects','Motion','LUT'],coverColor:'from-fuchsia-900/60 to-pink-900/40',badge:null,     bio:'Motion designer spécialisée dans les effets visuels et les LUTs cinématiques.' },
-  { id:8,  name:'Théo Leroy',       initials:'T', grad:'from-sky-500 to-blue-600',       role:'Dev & Plugin Maker',             verified:true,  products:55, sales:'2.9k', followers:'9.2k', rating:4.9, reviews:321, years:'3 ans',
-    specialties:['Plugins','JS','Figma API'],    coverColor:'from-sky-900/60 to-blue-900/40',   badge:null,     bio:'Développeur spécialisé dans les plugins Figma et les outils no-code avancés.' },
-  { id:9,  name:'Nadia Rahman',     initials:'N', grad:'from-teal-500 to-cyan-400',      role:'Brand Designer & Typographe',    verified:false, products:14, sales:'0.5k', followers:'1.9k', rating:4.5, reviews:38,  years:'8 mois',
-    specialties:['Branding','Typographie','AI'], coverColor:'from-teal-900/60 to-cyan-900/40',  badge:'🆕 New',  bio:'Designer fraîchement arrivée, spécialisée dans l\'identité visuelle et la typographie.' },
-];
+const rawCreators = {!! json_encode($creators->items()) !!};
+
+// Mapping function to adapt backend model to frontend expected structure
+const creators = rawCreators.map(u => {
+    const avatarGradients = {
+        'av1': 'from-violet-600 to-cyan-500',
+        'av2': 'from-cyan-500 to-sky-600',
+        'av3': 'from-amber-500 to-orange-500',
+        'av4': 'from-rose-500 to-pink-600',
+        'av5': 'from-emerald-500 to-teal-600',
+        'av6': 'from-indigo-500 to-purple-600'
+    };
+
+    const coverColors = {
+        'av1': 'from-violet-900/60 to-cyan-900/40',
+        'av2': 'from-cyan-900/60 to-sky-900/40',
+        'av3': 'from-amber-900/60 to-orange-900/40',
+        'av4': 'from-rose-900/60 to-pink-900/40',
+        'av5': 'from-emerald-900/60 to-teal-900/40',
+        'av6': 'from-indigo-900/60 to-purple-900/40'
+    };
+
+    const specialtyLabels = {
+        'uidesign': 'UI/UX Designer',
+        'dev': 'Développeur Full Stack',
+        'illustration': 'Illustrateur & Design',
+        'motion': 'Motion Designer',
+        'audio': 'Producteur Audio',
+        'formation': 'Formateur',
+        '3D': 'Artiste 3D',
+        'mobile': 'Développeur Mobile'
+    };
+
+    return {
+        id: u.id,
+        name: `${u.firstname} ${u.lastname}`,
+        initials: u.pseudo ? u.pseudo.charAt(0).toUpperCase() : u.firstname.charAt(0).toUpperCase(),
+        grad: avatarGradients[u.avatar] || 'from-violet-600 to-cyan-500',
+        role: specialtyLabels[u.specialite] || u.specialite,
+        verified: u.isAuth,
+        products: u.products_count || 0,
+        sales: '0', 
+        followers: '0',
+        rating: 5.0,
+        reviews: 0,
+        years: '1 an',
+        specialties: [specialtyLabels[u.specialite] || u.specialite],
+        coverColor: coverColors[u.avatar] || 'from-violet-900/60 to-cyan-900/40',
+        badge: null,
+        bio: u.description || 'Pas de description disponible.'
+    };
+});
 
 /* ─── LEADERBOARD ─── */
-const topCreators = [...creators].sort((a,b) => parseFloat(b.sales) - parseFloat(a.sales)).slice(0,5);
+const topCreators = [...creators].sort((a,b) => b.products - a.products).slice(0,5);
 function renderLeaderboard() {
   const lb = document.getElementById('leaderboard');
+  if (!lb) return;
   lb.innerHTML = topCreators.map((c,i) => `
-    <div class="lb-row ${i===0?'top':''}" onclick="openModal(${c.id-1})" style="animation:fadeUp .4s ease ${i*.07}s both;">
+    <div class="lb-row ${i===0?'top':''}" onclick="openModalById(${c.id})" style="animation:fadeUp .4s ease ${i*.07}s both;">
       <span class="rank-num ${i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other'}">${i+1}</span>
       <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-700 text-white flex-shrink-0"
            style="background:linear-gradient(135deg,${gradToColors(c.grad)});">${c.initials}</div>
       <div class="flex-1 min-w-0">
         <div class="text-white text-xs font-600 truncate">${c.name}</div>
-        <div class="text-slate-500 text-xs">${c.sales} ventes</div>
+        <div class="text-slate-500 text-xs">${c.products} produits</div>
       </div>
-      <div class="stars text-xs">${c.rating === 5.0 ? '★★★★★' : '★★★★☆'}</div>
+      <div class="stars text-xs">${buildStars(c.rating)}</div>
     </div>
   `).join('');
 }
@@ -973,10 +1006,12 @@ renderLeaderboard();
 let currentView = 'grid';
 function renderGrid(data) {
   const grid = document.getElementById('creatorsGrid');
+  if (!grid) return;
+  
   if (currentView === 'grid') {
     grid.className = 'grid sm:grid-cols-2 xl:grid-cols-3 gap-5 mb-8';
     grid.innerHTML = data.map((c,i) => `
-      <div class="creator-card" style="animation:cardIn .5s ease ${i*.06}s both;" onclick="openModal(${c.id-1})">
+      <div class="creator-card" style="animation:cardIn .5s ease ${i*.06}s both;" onclick="openModalById(${c.id})">
         <!-- Cover -->
         <div class="creator-cover bg-gradient-to-br ${c.coverColor}" style="position:relative;">
           ${c.badge ? `<div class="absolute top-3 left-3 z-10 text-xs px-2.5 py-1 rounded-full font-medium backdrop-blur-sm"
@@ -996,32 +1031,18 @@ function renderGrid(data) {
             <h3 class="font-display text-white font-700 text-base">${c.name}</h3>
           </div>
           <p class="text-slate-500 text-xs mb-3">${c.role}</p>
-          <!-- Specialties -->
           <div class="flex flex-wrap gap-1.5 mb-4">
             ${c.specialties.slice(0,3).map(s => `<span class="text-xs px-2 py-0.5 rounded-full border border-white/10 text-slate-400 bg-white/3">${s}</span>`).join('')}
           </div>
-          <!-- Stats -->
-          <div class="grid grid-cols-3 gap-2 mb-4">
+          <div class="grid grid-cols-2 gap-2 mb-4">
             <div class="bg-white/3 rounded-lg p-2 text-center border border-white/5">
               <div class="font-display text-white font-700 text-sm">${c.products}</div>
               <div class="text-slate-600 text-xs">produits</div>
             </div>
             <div class="bg-white/3 rounded-lg p-2 text-center border border-white/5">
-              <div class="font-display text-white font-700 text-sm">${c.sales}</div>
-              <div class="text-slate-600 text-xs">ventes</div>
+               <div class="stars text-xs">${buildStars(c.rating)}</div>
+               <div class="text-slate-600 text-xs">Note</div>
             </div>
-            <div class="bg-white/3 rounded-lg p-2 text-center border border-white/5">
-              <div class="font-display text-white font-700 text-sm">${c.followers}</div>
-              <div class="text-slate-600 text-xs">abonnés</div>
-            </div>
-          </div>
-          <!-- Rating bar -->
-          <div class="flex items-center gap-2 mb-1">
-            <div class="stars text-xs">${buildStars(c.rating)}</div>
-            <span class="text-slate-500 text-xs">${c.rating} (${c.reviews})</span>
-          </div>
-          <div class="prog-track mt-2">
-            <div class="prog-fill" style="width:${(c.rating/5*100).toFixed(0)}%;"></div>
           </div>
         </div>
       </div>
@@ -1033,7 +1054,7 @@ function renderGrid(data) {
       <div style="background:var(--c-surface);border:1px solid var(--c-border);border-radius:16px;display:flex;align-items:center;gap:16px;padding:14px 16px;transition:transform .25s,border-color .25s,box-shadow .25s;cursor:pointer;animation:cardIn .4s ease ${i*.04}s both;"
            onmouseenter="this.style.transform='translateX(4px)';this.style.borderColor='rgba(124,58,237,.35)';"
            onmouseleave="this.style.transform='';this.style.borderColor='var(--c-border)';"
-           onclick="openModal(${c.id-1})">
+           onclick="openModalById(${c.id})">
         <div style="position:relative;flex-shrink:0;">
           <div class="creator-avatar" style="background:linear-gradient(135deg,${gradToColors(c.grad)});width:52px;height:52px;font-size:18px;">${c.initials}</div>
           ${c.verified ? `<div class="verified-badge"><svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></div>` : ''}
@@ -1041,31 +1062,23 @@ function renderGrid(data) {
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 mb-0.5">
             <span class="font-display text-white font-700 text-sm">${c.name}</span>
-            ${c.badge ? `<span class="text-xs px-1.5 py-0.5 rounded bg-white/8 text-slate-400">${c.badge}</span>` : ''}
           </div>
           <div class="text-slate-500 text-xs mb-2">${c.role}</div>
-          <div class="flex gap-1.5">
-            ${c.specialties.slice(0,2).map(s=>`<span class="text-xs px-2 py-0.5 rounded-full border border-white/10 text-slate-400">${s}</span>`).join('')}
-          </div>
         </div>
         <div class="flex items-center gap-5 flex-shrink-0 text-center hidden sm:flex">
           <div><div class="font-display text-white font-700 text-sm">${c.products}</div><div class="text-slate-600 text-xs">produits</div></div>
-          <div><div class="font-display text-white font-700 text-sm">${c.sales}</div><div class="text-slate-600 text-xs">ventes</div></div>
           <div class="stars text-xs">${buildStars(c.rating)}</div>
         </div>
         <button class="follow-btn flex-shrink-0" onclick="event.stopPropagation();toggleFollow(this)">+ Suivre</button>
       </div>
     `).join('');
   }
-  attachCursor();
 }
 
 function buildStars(r) {
   const f = Math.floor(r);
   return Array.from({length:5}, (_,i) => i<f ? '★' : '☆').join('');
 }
-
-renderGrid(creators);
 
 /* ─── VIEW TOGGLE ─── */
 function setView(v) {
@@ -1078,16 +1091,15 @@ function setView(v) {
 /* ─── SORT ─── */
 function sortCreators(val) {
   let s = [...creators];
-  if (val==='sales')     s.sort((a,b) => parseFloat(b.sales)-parseFloat(a.sales));
+  if (val==='sales')     s.sort((a,b) => b.products - a.products);
   if (val==='rating')    s.sort((a,b) => b.rating-a.rating);
   if (val==='newest')    s.reverse();
-  if (val==='followers') s.sort((a,b) => parseFloat(b.followers)-parseFloat(a.followers));
   renderGrid(s);
 }
 
 /* ─── MODAL ─── */
-function openModal(idx) {
-  const c = creators[idx];
+function openModalById(id) {
+  const c = creators.find(x => x.id === id);
   if(!c) return;
   document.getElementById('mAvatar').textContent = c.initials;
   document.getElementById('mAvatar').style.background = `linear-gradient(135deg,${gradToColors(c.grad)})`;
@@ -1100,51 +1112,39 @@ function openModal(idx) {
   document.getElementById('mFollowers').textContent = c.followers;
   document.getElementById('mYears').textContent = c.years;
   document.getElementById('mBio').textContent = c.bio;
-  // Tags
+  
   const colors = ['violet','cyan','amber'];
   document.getElementById('mTags').innerHTML = c.specialties.map((s,i) => {
-    const col = colors[i] || '';
-    return col
-      ? `<span class="text-xs px-3 py-1 rounded-full border border-${col}-500/30 text-${col}-400 bg-${col}-500/10">${s}</span>`
-      : `<span class="text-xs px-3 py-1 rounded-full border border-white/10 text-slate-400">${s}</span>`;
+    const col = colors[i] || 'violet';
+    return `<span class="text-xs px-3 py-1 rounded-full border border-${col}-500/30 text-${col}-400 bg-${col}-500/10">${s}</span>`;
   }).join('');
   document.getElementById('modal').classList.add('open');
 }
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 
 /* ─── SEARCH ─── */
-document.getElementById('navSearch').addEventListener('input', function() {
-  const q = this.value.toLowerCase();
-  const filtered = q ? creators.filter(c =>
-    c.name.toLowerCase().includes(q) ||
-    c.role.toLowerCase().includes(q) ||
-    c.specialties.some(s => s.toLowerCase().includes(q))
-  ) : creators;
-  document.getElementById('resultCount').textContent = filtered.length;
-  renderGrid(filtered);
+document.getElementById('navSearch').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+      window.location.href = `/createurs?search=${encodeURIComponent(this.value)}`;
+  }
 });
 
 /* ─── CAT PILLS ─── */
 document.querySelectorAll('.cat-pill').forEach(pill => {
   pill.addEventListener('click', () => {
-    pill.closest('div').querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
-    pill.classList.add('active');
+    const spec = pill.getAttribute('data-spec');
+    if (spec !== null) {
+        if (spec === "") {
+            window.location.href = '/createurs';
+        } else {
+            window.location.href = `/createurs?specialite=${spec}`;
+        }
+    }
   });
 });
 
 /* ─── PAGINATION ─── */
 function changePage(btn) {
-  document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  window.scrollTo({ top: 280, behavior:'smooth' });
-  const grid = document.getElementById('creatorsGrid');
-  grid.style.opacity = '0'; grid.style.transform = 'translateY(10px)'; grid.style.transition = 'all .3s';
-  setTimeout(() => {
-    renderGrid([...creators].sort(() => Math.random()-.5));
-    grid.style.opacity = '1'; grid.style.transform = 'translateY(0)';
-  }, 280);
+  // Simple pagination logic for now (could be improved with AJAX or Laravel's native pagination)
 }
 
 /* ─── FILTER CHECKBOXES (style inject) ─── */
@@ -1155,7 +1155,9 @@ document.querySelectorAll('.filter-checkbox').forEach(cb => {
   });
 });
 
-/* ─── INIT CURSOR ATTACH ─── */
+/* ─── INIT ─── */
+renderLeaderboard();
+renderGrid(creators);
 attachCursor();
 </script>
 </body>

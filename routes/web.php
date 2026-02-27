@@ -80,3 +80,5 @@ Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 });
+
+//Routes pour le lancement du payementavec fedapay
