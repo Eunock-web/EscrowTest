@@ -13,10 +13,12 @@ Route::controller(ProductController::class)
     ->prefix('products')
     ->group(function () {
         Route::get('/', 'index')->name('allProduct');
-        Route::post('/add', 'create')->name('createProduct');
-        Route::get('/{productId}', 'SearchProduct');
-        Route::delete('/{productId}', 'DeleteProduct');
-        Route::put('/{productId}', 'updateProduct')->name('updateProducts');
+        Route::get('/add', 'showCreate')->name('createProduct');
+        Route::post('/add', 'create')->name('storeProduct');
+        Route::get('/{productId}/edit', 'updateProduct')->name('editProduct');
+        Route::match(['put', 'post'], '/{productId}', 'updateProduct')->name('updateProducts');
+        Route::get('/{productId}', 'searchProduct');
+        Route::delete('/{productId}', 'deleteProduct');
     })->middleware('auth');
 
 // Routes pour l'authentification
@@ -37,6 +39,7 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard'
 Route::get('/explorer', function (){
     return view('Products.explorer');
 });
+
 
 Route::get('/createurs', function (){
     return view('Products.createurs');

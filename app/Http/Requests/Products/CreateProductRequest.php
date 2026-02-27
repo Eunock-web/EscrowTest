@@ -16,18 +16,16 @@ class CreateProductRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'name' => ['required' | 'string' | 'min:5'],
-            'categories' => ['required' | 'string' | 'min:5' | 'unique:categories,description'],
-            'description' => ['required' | 'string' | 'min:10'],
-            'prix' => ['required' | 'numeric' ],
-            'stock' => ['required' | 'numeric' ],
-            'image' => ['required','image', 'mimes:png,jpg,jpeg', 'max:2048'],
+            'nom' => ['required', 'string', 'min:5', 'max:80'],
+            'categorie_id' => ['required', 'exists:categories,id'],
+            'description' => ['required', 'string', 'min:10'],
+            'prix' => ['required', 'numeric', 'min:0'],
+            'stock' => ['nullable', 'numeric', 'min:0'],
+            'image' => ['required', 'image', 'mimes:png,jpg,jpeg,webp', 'max:5120'],
         ];
     }
 }
