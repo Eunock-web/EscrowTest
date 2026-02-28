@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 // Routes pour le client
 Route::middleware(['auth', 'user.client'])->group(function () {
     Route::get('/mes-achats', [ClientController::class, 'purchases'])->name('client.purchases');
+    Route::get('/products/{productId]', [ClientController::class, 'Collecte'])->name('client.initTransaction');
 });
 
 // Routes publiques / mixtes
