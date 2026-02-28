@@ -456,7 +456,7 @@
 
             @if(isset($product->url_image))
                 const d = document.getElementById('prevCover');
-                d.style.backgroundImage = 'url(/storage/{{ $product->url_image }})';
+                d.style.backgroundImage = 'url({{ asset('storage/' . $product->url_image) }})';
                 d.style.backgroundSize = 'cover';
                 d.style.backgroundPosition = 'center';
                 document.getElementById('prevEmoji').style.display = 'none';

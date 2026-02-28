@@ -740,7 +740,7 @@
     <div
         style="position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:84px 16px 40px;">
 
-        <form action="{{ url('auth/register') }}" method="post" id="regForm" style="width:100%; display:flex; flex-direction:column; align-items:center;" >
+        <form action="{{ route('register.store') }}" method="post" id="regForm" style="width:100%; display:flex; flex-direction:column; align-items:center;" >
             @csrf
             <input type="hidden" name="avatar" id="hidden_avatar" value="{{ old('avatar', 'av1') }}">
             <input type="hidden" name="specialite" id="hidden_specialite" value="{{ old('specialite', '') }}">

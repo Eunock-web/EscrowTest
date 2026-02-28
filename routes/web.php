@@ -46,7 +46,7 @@ Route::middleware(['auth', 'user.creator'])->group(function () {
     Route::get('/sales', [SalesController::class, 'index'])->name('sales');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {      
     Route::get('/settings', [ProfileController::class, 'index'])->name('settings');
     Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
 });
@@ -54,7 +54,8 @@ Route::middleware('auth')->group(function () {
 // Routes pour le client
 Route::middleware(['auth', 'user.client'])->group(function () {
     Route::get('/mes-achats', [ClientController::class, 'purchases'])->name('client.purchases');
-    Route::get('/products/{productId]', [ClientController::class, 'Collecte'])->name('client.initTransaction');
+    Route::get('/buy/{productId}', [ClientController::class, 'collecte'])->name('client.initTransaction');
+    Route::get('/callback', [ClientController::class, 'callback'])->name('client.callback');
 });
 
 // Routes publiques / mixtes
@@ -82,4 +83,3 @@ Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
 });
 
-//Routes pour le lancement du payementavec fedapay

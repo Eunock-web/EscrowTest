@@ -9,6 +9,7 @@ use App\Models\Sale;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ClientController extends Controller
 {
@@ -79,68 +80,119 @@ class ClientController extends Controller
 
 
     /**
-     * Creation of the client
+     * Creation of the client (Optional/Utility)
      */
-        public function createClient(){
-            $user = Auth::user();
-            $firstname = $user['firstname'];
-            $lastname = $user['lastname'];
-            $email = $user['email'];
-            
+    public function createClient()
+    {
+        $user = Auth::user();
 
-            /* Replace YOUR_SECRETE_API_KEY with your secret API key */
-\FedaPay\FedaPay::setApiKey("YOUR_SECRETE_API_KEY");
-/* Specify whether you want to run your query in test or live mode */
-\FedaPay\FedaPay::setEnvironment('sandbox'); //or setEnvironment('live');
-/* Create customer */
-\FedaPay\Customer::create(array(
-  "firstname" => $firstname ,
-  "lastname" => $lastname,
-  "email" => $email,
-));
+        \FedaPay\FedaPay::setApiKey(config('fedapay.secret_key'));
+        \FedaPay\FedaPay::setEnvironment(config('fedapay.environment'));
 
-        }
+        \FedaPay\Customer::create([
+            "firstname" => $user->firstname,
+            "lastname" => $user->lastname,
+            "email" => $user->email,
+        ]);
+    }
 
     /**
-     * Starting escrow
+     * Starting escrow / Payment initiation
      */
+    public function collecte($productId)
+    {
+        Log::info("Payment initiation started for product: $productId");
+        
+        $user = Auth::user();
+        $product = Product::findOrFail($productId);
+        Log::info("Payment initiation started for product: $product->nom");
+        \FedaPay\FedaPay::setApiKey(config('fedapay.secret_key'));
+        \FedaPay\FedaPay::setEnvironment(config('fedapay.environment'));
 
-    public function Transaction($productId){
-            $user = Auth::user();
-            $firstname = $user['firstname'];
-            $lastname = $user['lastname'];
-            $email = $user['email'];
+        try {
+            Log::info("Creating FedaPay transaction for user: " . $user->email);
+            
+            $transaction = \FedaPay\Transaction::create([
+                'description' => "Achat de : " . $product->nom,
+                'amount' => (int) $product->prix,
+                'currency' => ['iso' => 'XOF'],
+                'callback_url' => route('client.callback'),
+                'customer' => [
+                    'firstname' => $user->firstname,
+                    'lastname' => $user->lastname,
+                    'email' => $user->email,
+                ],
+                // Pass metadata to identify the product and buyer later
+                'metadata' => [
+                    'product_id' => $product->id,
+                    'buyer_id' => $user->id,
+                ]
+            ]);
 
+            $token = $transaction->generateToken();
+            Log::info("Token generated, redirecting to: " . $token->url);
+            
+            return redirect($token->url);
+        } catch (\Exception $e) {
+            Log::error("FedaPay Error: " . $e->getMessage());
+            return back()->withErrors(['error' => "Erreur lors de l'initialisation du paiement : " . $e->getMessage()]);
+        }
+    }
 
-            //Recuperatioin des produits
-            $products = Product::findOrFail($productId);
+    /**
+     * FedaPay Callback handler
+     */
+    public function callback(Request $request)
+    {
+        $transactionId = $request->input('id');
+        $status = $request->input('status');
 
-            if(!$products){
-                return back()->withErrors([
-                    'error'=> "Produit innexistant"
-                ]);
+        Log::info("FedaPay callback received. ID: $transactionId, Status: $status");
+
+        \FedaPay\FedaPay::setApiKey(config('fedapay.secret_key'));
+        \FedaPay\FedaPay::setEnvironment(config('fedapay.environment'));
+
+        try {
+            $transaction = \FedaPay\Transaction::retrieve($transactionId);
+            Log::info("Transaction retrieved. Real status: " . $transaction->status);
+
+            if ($transaction->status === 'approved' || $status === 'approved') {
+                $metadata = $transaction->metadata;
+                $productId = $metadata['product_id'] ?? null;
+                $buyerId = $metadata['buyer_id'] ?? null;
+
+                if ($productId && $buyerId) {
+                    $product = Product::find($productId);
+                    
+                    // Prevent duplicate sales
+                    $existingSale = Sale::where('product_id', $productId)
+                        ->where('buyer_id', $buyerId)
+                        ->where('status', 'completed')
+                        ->first();
+
+                    if (!$existingSale) {
+                        Sale::create([
+                            'product_id' => $product->id,
+                            'seller_id' => $product->user_id, // Assuming user_id is the seller
+                            'buyer_id' => $buyerId,
+                            'amount' => $product->prix,
+                            'status' => 'completed',
+                        ]);
+                        Log::info("Sale recorded successfully.");
+                    } else {
+                        Log::warning("Sale already exists for this transaction.");
+                    }
+
+                    return redirect()->route('client.purchases')->with('success', 'Paiement réussi ! Votre achat a été enregistré.');
+                }
             }
 
-        \FedaPay\Fedapay::setApiKey('YOUR_API_KEY');
-\FedaPay\Fedapay::setEnvironment('sandbox');
-$transaction = \FedaPay\Transaction::create([
-  'description' => $products['description'],
-  'amount' => $products['prix'],
-  'currency' => ['iso' => 'XOF'],
-  'callback_url' => 'https://example.com/callback',
-  // Si le client n'existe pas encore
-  'customer' => [
-      'firstname' => $firstname,
-      'lastname' => $lastname,
-      'email' => $email,
-    //   'phone_number' => [
-    //       'number' => '+22997808080',
-    //       'country' => 'bj'
-    //   ]
-  ]
-]);
-
-$token = $transaction->generateToken();
-return header('Location:'. $token->url());
+            Log::warning("Transaction was not approved.");
+            return redirect()->route('explorer')->with('error', 'Le paiement a échoué ou a été annulé.');
+        } catch (\Exception $e) {
+            Log::error("Callback Verification Error: " . $e->getMessage());
+            return redirect()->route('explorer')->with('error', 'Une erreur est survenue lors de la vérification du paiement.');
+        }
     }
+
 }
