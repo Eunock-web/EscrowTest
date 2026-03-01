@@ -178,6 +178,13 @@ class ClientController extends Controller
                             'amount' => $product->prix,
                             'status' => 'completed',
                         ]);
+
+                        //Creation du log pour cette collecte effectuer avec success.
+                        /**
+                         * 
+                         */
+
+
                         Log::info("Sale recorded successfully.");
                     } else {
                         Log::warning("Sale already exists for this transaction.");
@@ -191,6 +198,10 @@ class ClientController extends Controller
             return redirect()->route('explorer')->with('error', 'Le paiement a échoué ou a été annulé.');
         } catch (\Exception $e) {
             Log::error("Callback Verification Error: " . $e->getMessage());
+            //Creation du log pour cette erreur.
+            /**
+             * 
+             */
             return redirect()->route('explorer')->with('error', 'Une erreur est survenue lors de la vérification du paiement.');
         }
     }

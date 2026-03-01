@@ -86,9 +86,9 @@ class AdminController extends Controller
         ->get();
 
         // Categoriy Distribution
-        $categoryDistribution = Product::select('categories.nom', DB::raw('count(*) as count'))
+        $categoryDistribution = Product::select('categories.categorie as nom', DB::raw('count(*) as count'))
             ->join('categories', 'products.categorie_id', '=', 'categories.id')
-            ->groupBy('categories.nom')
+            ->groupBy('categories.categorie')
             ->get();
 
         return view('Admin.analytics', compact('stats', 'monthlyRevenue', 'userGrowth', 'categoryDistribution'));
