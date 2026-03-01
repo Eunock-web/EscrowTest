@@ -122,8 +122,8 @@ class ClientController extends Controller
                     'lastname' => $user->lastname,
                     'email' => $user->email,
                 ],
-                // Pass metadata to identify the product and buyer later
-                'metadata' => [
+                // Pass custom_metadata to identify the product and buyer later
+                'custom_metadata' => [
                     'product_id' => $product->id,
                     'buyer_id' => $user->id,
                 ]
@@ -157,7 +157,7 @@ class ClientController extends Controller
             Log::info("Transaction retrieved. Real status: " . $transaction->status);
 
             if ($transaction->status === 'approved' || $status === 'approved') {
-                $metadata = $transaction->metadata;
+                $metadata = $transaction->custom_metadata;
                 $productId = $metadata['product_id'] ?? null;
                 $buyerId = $metadata['buyer_id'] ?? null;
 
