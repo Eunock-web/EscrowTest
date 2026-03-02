@@ -47,4 +47,11 @@ class AdminAuthController extends Controller
             'email' => 'Identifiants incorrects.',
         ])->onlyInput('email');
     }
+
+    /**
+     * Gestion de la transaction de l'argent vers l'argent du destinataire
+     */
+    public function payouts(){
+        
+    }
 }

@@ -81,5 +81,6 @@ Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/payouts', [AdminController::class, 'payouts'])->name('admin.payouts');
 });
 

@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
+use App\Models\PaymentLog;
+
 class ClientController extends Controller
 {
     /**
@@ -68,7 +70,7 @@ class ClientController extends Controller
         }
 
         $creators = $query->withCount('products')->latest()->paginate(12);
-        
+
         // stats for the banner
         $totalCreators = User::where('role', 'createur')->count();
         $totalProducts = Product::count();
@@ -100,9 +102,9 @@ class ClientController extends Controller
      * Starting escrow / Payment initiation
      */
     public function collecte($productId)
-    {
+    {   
         Log::info("Payment initiation started for product: $productId");
-        
+
         $user = Auth::user();
         $product = Product::findOrFail($productId);
         Log::info("Payment initiation started for product: $product->nom");
@@ -111,7 +113,7 @@ class ClientController extends Controller
 
         try {
             Log::info("Creating FedaPay transaction for user: " . $user->email);
-            
+
             $transaction = \FedaPay\Transaction::create([
                 'description' => "Achat de : " . $product->nom,
                 'amount' => (int) $product->prix,
@@ -131,7 +133,7 @@ class ClientController extends Controller
 
             $token = $transaction->generateToken();
             Log::info("Token generated, redirecting to: " . $token->url);
-            
+
             return redirect($token->url);
         } catch (\Exception $e) {
             Log::error("FedaPay Error: " . $e->getMessage());
@@ -156,18 +158,27 @@ class ClientController extends Controller
             $transaction = \FedaPay\Transaction::retrieve($transactionId);
             Log::info("Transaction retrieved. Real status: " . $transaction->status);
 
-            if ($transaction->status === 'approved' || $status === 'approved') {
-                $metadata = $transaction->custom_metadata;
-                $productId = $metadata['product_id'] ?? null;
-                $buyerId = $metadata['buyer_id'] ?? null;
+            // Log everything into payments_logs
+            $metadata = $transaction->custom_metadata;
+            $productId = $metadata['product_id'] ?? null;
+            $buyerId = $metadata['buyer_id'] ?? null;
 
+            PaymentLog::create([
+                'transaction_id' => $transactionId,
+                'status' => $transaction->status,
+                'payload' => $transaction->toArray(), // FedaPay objects usually have toArray() or similar
+                'product_id' => $productId,
+                'buyer_id' => $buyerId,
+            ]);
+
+            if ($transaction->status === 'approved' || $status === 'approved') {
                 if ($productId && $buyerId) {
                     $product = Product::find($productId);
-                    
+
                     // Prevent duplicate sales
                     $existingSale = Sale::where('product_id', $productId)
                         ->where('buyer_id', $buyerId)
-                        ->where('status', 'completed')
+                        ->where('status', 'escrow_locked')
                         ->first();
 
                     if (!$existingSale) {
@@ -176,14 +187,8 @@ class ClientController extends Controller
                             'seller_id' => $product->user_id, // Assuming user_id is the seller
                             'buyer_id' => $buyerId,
                             'amount' => $product->prix,
-                            'status' => 'completed',
+                            'status' => 'escrow_locked',
                         ]);
-
-                        //Creation du log pour cette collecte effectuer avec success.
-                        /**
-                         * 
-                         */
-
 
                         Log::info("Sale recorded successfully.");
                     } else {
@@ -198,10 +203,14 @@ class ClientController extends Controller
             return redirect()->route('explorer')->with('error', 'Le paiement a échoué ou a été annulé.');
         } catch (\Exception $e) {
             Log::error("Callback Verification Error: " . $e->getMessage());
-            //Creation du log pour cette erreur.
-            /**
-             * 
-             */
+            
+            // Optionally log the error even if retrieval failed
+            PaymentLog::create([
+                'transaction_id' => $transactionId,
+                'status' => 'error',
+                'payload' => ['error' => $e->getMessage()],
+            ]);
+
             return redirect()->route('explorer')->with('error', 'Une erreur est survenue lors de la vérification du paiement.');
         }
     }

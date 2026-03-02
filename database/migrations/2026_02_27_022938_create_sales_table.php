@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('buyer_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
-            $table->string('status')->default('completed'); // completed, pending, refunded
+            $table->enum('status', ['escrow_locked', 'completed', 'pending', 'refunded', 'canceled'])->default('escrow_locked'); // completed, pending, refunded
             $table->timestamps();
         });
     }
