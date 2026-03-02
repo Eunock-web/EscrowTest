@@ -54,7 +54,7 @@ class WebHookController extends Controller
                 \App\Models\PaymentLog::create([
                     'transaction_id' => $transaction->id,
                     'status' => $transaction->status,
-                    'payload' => $transaction->toArray(),
+                    'payload' => json_decode(json_encode($transaction), true),
                     'product_id' => $productId,
                     'buyer_id' => $buyerId,
                 ]);

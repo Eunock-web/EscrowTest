@@ -44,6 +44,8 @@ Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard'
 Route::middleware(['auth', 'user.creator'])->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/sales', [SalesController::class, 'index'])->name('sales');
+    Route::get('/escrow', [SalesController::class, 'escrow'])->name('creator.escrow');
+    Route::patch('/escrow/{sale}/confirm', [SalesController::class, 'confirmDelivery'])->name('creator.escrow.confirm');
 });
 
 Route::middleware('auth')->group(function () {      

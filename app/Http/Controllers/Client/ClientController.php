@@ -166,7 +166,7 @@ class ClientController extends Controller
             PaymentLog::create([
                 'transaction_id' => $transactionId,
                 'status' => $transaction->status,
-                'payload' => $transaction->toArray(), // FedaPay objects usually have toArray() or similar
+                'payload' => json_decode(json_encode($transaction), true),
                 'product_id' => $productId,
                 'buyer_id' => $buyerId,
             ]);
@@ -208,7 +208,7 @@ class ClientController extends Controller
             PaymentLog::create([
                 'transaction_id' => $transactionId,
                 'status' => 'error',
-                'payload' => ['error' => $e->getMessage()],
+                'payload' => ['error' => $e->getMessage(), 'raw_status' => $status ?? null],
             ]);
 
             return redirect()->route('explorer')->with('error', 'Une erreur est survenue lors de la vérification du paiement.');

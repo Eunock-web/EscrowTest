@@ -459,7 +459,7 @@
                 <a href="/auth/login"> <button
                         class="hidden sm:block text-sm text-slate-400 hover:text-white transition-colors px-4 py-2">Connexion</button>
                 </a>
-                <button class="btn-primary text-sm text-white px-5 py-2 rounded-lg font-medium">Commencer</button>
+                <a href="/auth/register" class="btn-primary text-sm text-white px-5 py-2 rounded-lg font-medium">Commencer</a>
             </div>
         </div>
     </nav>
