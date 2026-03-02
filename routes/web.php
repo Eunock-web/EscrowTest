@@ -84,3 +84,6 @@ Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/payouts', [AdminController::class, 'payouts'])->name('admin.payouts');
 });
 
+//Route pour la gestion du webhook
+Route::post('fedapay/webhook', [\App\Http\Controllers\WebHookController::class, 'handle'])->name('webhook');
+

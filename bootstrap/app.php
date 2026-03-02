@@ -17,6 +17,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'user.admin' => \App\Http\Middleware\User\AdminMiddleware::class,
             'app.auth' => \App\Http\Middleware\AuthMiddleware::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'fedapay/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
