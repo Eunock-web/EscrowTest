@@ -65,11 +65,32 @@
                     <div class="glass p-8 rounded-3xl border-white/5">
                         <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
                             <span class="p-2 bg-cyan-500/10 rounded-lg text-cyan-400">📧</span>
-                            Contact
+                            Contact & Paiement
                         </h3>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Email</label>
-                            <input type="email" name="email" value="{{ $user->email }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500/50 focus:ring-0 outline-none transition-all">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-2">
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Email</label>
+                                <input type="email" name="email" value="{{ $user->email }}" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-purple-500/50 focus:ring-0 outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Numéro Mobile Money</label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400 font-bold">📱</span>
+                                    <input type="text" name="phone_number" value="{{ $user->phone_number }}" placeholder="97XXXXXX" class="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-white focus:border-cyan-500/50 focus:ring-0 outline-none transition-all">
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-1">Utilisé pour recevoir vos paiements escrow.</p>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pays (code)</label>
+                                <select name="country" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-cyan-500/50 focus:ring-0 outline-none transition-all">
+                                    <option value="BJ" {{ $user->country === 'BJ' ? 'selected' : '' }}>🇧🇯 Bénin (BJ)</option>
+                                    <option value="CI" {{ $user->country === 'CI' ? 'selected' : '' }}>🇨🇮 Côte d'Ivoire (CI)</option>
+                                    <option value="SN" {{ $user->country === 'SN' ? 'selected' : '' }}>🇸🇳 Sénégal (SN)</option>
+                                    <option value="TG" {{ $user->country === 'TG' ? 'selected' : '' }}>🇹🇬 Togo (TG)</option>
+                                    <option value="ML" {{ $user->country === 'ML' ? 'selected' : '' }}>🇲🇱 Mali (ML)</option>
+                                    <option value="GN" {{ $user->country === 'GN' ? 'selected' : '' }}>🇬🇳 Guinée (GN)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 

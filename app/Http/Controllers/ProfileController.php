@@ -24,6 +24,8 @@ class ProfileController extends Controller
             'specialite' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1000',
             'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone_number' => 'nullable|string|max:20',
+            'country' => 'nullable|string|max:5',
         ]);
 
         $user->update($validated);

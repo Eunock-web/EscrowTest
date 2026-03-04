@@ -26,6 +26,8 @@ class User extends Authenticatable
         'specialite',
         'plan',
         'email',
+        'phone_number',
+        'country',
         'role',
         'isAuth',
         'password',

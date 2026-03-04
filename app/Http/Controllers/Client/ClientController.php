@@ -50,7 +50,7 @@ class ClientController extends Controller
      */
     public function purchases()
     {
-        $purchases = Auth::user()->purchases()->with('product', 'seller')->where('status', 'completed')->latest()->get();
+        $purchases = Auth::user()->purchases()->with('product', 'seller')->latest()->get();
         return view('Client.purchases', compact('purchases'));
     }
 

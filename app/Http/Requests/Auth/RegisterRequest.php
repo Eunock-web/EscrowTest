@@ -26,6 +26,8 @@ class RegisterRequest extends FormRequest
             'lastname' => ['required', 'string', 'min:2', 'max:255'],
             'pseudo' => ['required', 'string', 'min:3', 'max:255', 'unique:users,pseudo'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'phone_number' => ['nullable', 'string', 'max:20'],
+            'country' => ['nullable', 'string', 'max:5'],
             'password' => ['required', 'string', 'min:8', 'confirmed', \Illuminate\Validation\Rules\Password::min(8)->letters()->mixedCase()->numbers()],
             'description' => ['nullable', 'string', 'max:160'],
             'avatar' => ['required', 'string', 'in:av1,av2,av3,av4,av5,av6'],

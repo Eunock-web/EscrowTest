@@ -1,14 +1,14 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\Creator\AnalyticsController;
 use App\Http\Controllers\Creator\SalesController;
-use App\Http\Controllers\Client\ClientController;
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Products\ProductController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AdminAuthController;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -37,7 +37,6 @@ Route::controller(AuthController::class)
         Route::post('/login', 'login')->name('login.store');
         Route::post('/logout', 'logout')->name('logout');
     });
-        
 
 Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard')->middleware(['auth', 'user.creator']);
 
@@ -48,7 +47,7 @@ Route::middleware(['auth', 'user.creator'])->group(function () {
     Route::patch('/escrow/{sale}/confirm', [SalesController::class, 'confirmDelivery'])->name('creator.escrow.confirm');
 });
 
-Route::middleware('auth')->group(function () {      
+Route::middleware('auth')->group(function () {
     Route::get('/settings', [ProfileController::class, 'index'])->name('settings');
     Route::post('/settings', [ProfileController::class, 'update'])->name('settings.update');
 });
@@ -64,10 +63,9 @@ Route::middleware(['auth', 'user.client'])->group(function () {
 Route::get('/explorer', [ClientController::class, 'index'])->name('explorer');
 Route::get('/products/{id}', [ClientController::class, 'show'])->name('product.show');
 
-
 Route::get('/createurs', [ClientController::class, 'creators'])->name('creators');
 
-Route::get('/tarifs', function (){
+Route::get('/tarifs', function () {
     return view('Products.tarifs');
 });
 
@@ -86,6 +84,5 @@ Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/payouts', [AdminController::class, 'payouts'])->name('admin.payouts');
 });
 
-//Route pour la gestion du webhook
+// Route pour la gestion du webhook
 Route::post('fedapay/webhook', [\App\Http\Controllers\WebHookController::class, 'handle'])->name('webhook');
-
