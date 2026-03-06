@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Creator;
 
 use App\Http\Controllers\Controller;
 use App\Models\Sale;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class SalesController extends Controller
 {
@@ -41,6 +41,7 @@ class SalesController extends Controller
             ->where('status', 'escrow_locked')
             ->sum('amount');
 
+
         return view('Creator.escrow', compact('pendingSales', 'completedSales', 'totalPending'));
     }
 
@@ -55,6 +56,8 @@ class SalesController extends Controller
                 ->route('creator.escrow')
                 ->with('error', 'Action non autorisée.');
         }
+
+        // Log::info("Id acheteur", $sale->seller_id);
 
         if ($sale->status !== 'escrow_locked') {
             return redirect()
@@ -73,13 +76,14 @@ class SalesController extends Controller
             $payout = \FedaPay\Payout::create([
                 'amount' => (int) $sale->amount,
                 'currency' => ['iso' => 'XOF'],
-                'description' => 'Libération escrow : ' . $sale->product->nom,
+                "mode" => "mtn",
+                'description' => 'Libération escrow : '.$sale->product->nom,
                 'customer' => [
                     'firstname' => $seller->firstname,
                     'lastname' => $seller->lastname,
                     'email' => $seller->email,
                     'phone_number' => [
-                        'number' => $seller->phone_number,
+                        'number' => '+229'. $seller->phone_number,
                         'country' => $seller->country ?? 'BJ',
                     ],
                 ],
@@ -95,13 +99,13 @@ class SalesController extends Controller
 
             return redirect()
                 ->route('creator.escrow')
-                ->with('success', 'Livraison confirmée ! Le paiement de ' . number_format($sale->amount, 0) . ' XOF a été libéré.');
+                ->with('success', 'Livraison confirmée ! Le paiement de '.number_format($sale->amount, 0).' XOF a été libéré.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Payout Error for sale #{$sale->id}: " . $e->getMessage());
+            \Illuminate\Support\Facades\Log::error("Payout Error for sale #{$sale->id}: ".$e->getMessage());
 
             return redirect()
                 ->route('creator.escrow')
-                ->with('error', 'Erreur lors du virement : ' . $e->getMessage());
+                ->with('error', 'Erreur lors du virement : '.$e->getMessage());
         }
     }
 }

@@ -86,6 +86,24 @@ class ClientSeeder extends Seeder
                 'isAuth' => true,
                 'password' => Hash::make('ClientPass@5'),
             ],
+
+            [
+                'firstname' => 'Light',
+                'lastname' => 'YAGAMI',
+                'pseudo' => 'l_ight',
+                'email' => 'lightyagami@gmail.com',
+                'phone_number' => '64000001',
+                'country' => 'BJ',
+                'description' => 'Motion designer et vidéaste passionné.',
+                'avatar' => 'av5',
+                'specialite' => 'motion',
+                'plan' => 'gratuit',
+                'role' => 'client',
+                'isAuth' => true,
+                'password' => Hash::make('ClientPass@6'),
+            ],
+
+
         ];
 
         foreach ($clients as $client) {

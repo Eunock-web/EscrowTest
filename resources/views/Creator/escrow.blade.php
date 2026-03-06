@@ -31,7 +31,7 @@
 
         {{-- Alert Banner --}}
         <div class="mb-8 p-5 rounded-2xl border border-amber-500/20 bg-amber-500/5 flex items-start gap-4 animate-fade" style="animation-delay: 0.1s;">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center shrink-0 mt-0.5">
                 🔒
             </div>
             <div>

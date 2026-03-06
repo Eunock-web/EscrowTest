@@ -62,7 +62,7 @@ class AuthController extends Controller
     public function dashboard()
     {
         $userId = Auth::id();
-        
+
         $totalRevenue = \App\Models\Sale::where('seller_id', $userId)->sum('amount');
         $totalSales = \App\Models\Sale::where('seller_id', $userId)->count();
         $totalProducts = \App\Models\Product::where('user_id', $userId)->count();
