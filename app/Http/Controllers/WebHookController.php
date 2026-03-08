@@ -24,7 +24,7 @@ class WebHookController extends Controller
 
             if ($event->type == 'transaction.approved') {
                 $transaction = $event->data; // This is the transaction object
-                
+
                 $metadata = $transaction->custom_metadata;
                 $productId = $metadata['product_id'] ?? null;
                 $buyerId = $metadata['buyer_id'] ?? null;
@@ -32,7 +32,7 @@ class WebHookController extends Controller
                 // Logic similar to callback but server-to-server
                 if ($productId && $buyerId) {
                     $product = \App\Models\Product::find($productId);
-                    
+
                     $existingSale = \App\Models\Sale::where('product_id', $productId)
                         ->where('buyer_id', $buyerId)
                         ->where('status', 'escrow_locked')
@@ -49,7 +49,7 @@ class WebHookController extends Controller
                         \Illuminate\Support\Facades\Log::info("Sale recorded via Webhook.");
                     }
                 }
-                
+
                 // Always log the event
                 \App\Models\PaymentLog::create([
                     'transaction_id' => $transaction->id,
