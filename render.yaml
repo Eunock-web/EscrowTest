@@ -1,0 +1,31 @@
+databases:
+  - name: pixelvault-db
+    databaseName: escrow
+    user: pixeladmin
+    plan: free
+
+services:
+  - type: web
+    name: pixelvault-web
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pixelvault-db
+          property: connectionString
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        generateValue: true
+      - key: FEDAPAY_PUBLIC_KEY
+        sync: false
+      - key: FEDAPAY_SECRET_KEY
+        sync: false
+      - key: FEDAPAY_ENVIRONMENT
+        value: sandbox

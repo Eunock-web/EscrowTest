@@ -1,59 +1,115 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<div align="center">
+  <h1>🚀 PixelVault - Plateforme Escrow</h1>
+  <p>Une plateforme complète de vente de produits numériques intégrant des paiements sécurisés via <strong>FedaPay</strong> (mode Escrow/Séquestre).</p>
+</div>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## 📌 Présentation
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**PixelVault** permet aux créateurs de vendre leurs actifs numériques (designs, templates, scripts) en toute sécurité. Grâce à l'intégration Escrow de FedaPay, l'argent des clients est conservé en sécurité jusqu'à la confirmation de livraison du produit, garantissant ainsi la confiance entre les parties.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### ✨ Fonctionnalités Principales
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Espace Administrateur** : Modération des produits, gestion des utilisateurs et visualisation des statistiques.
+- **Espace Créateur** : Publication d'actifs numériques et tableau de bord des ventes.
+- **Espace Client** : Explorateur de la boutique, historique d'achats.
+- **Paiements Embarqués** : L'expérience d'achat se fait de manière fluide et sécurisée, sans quitter la plateforme (`checkout.js` embed).
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## ⚙️ Prérequis
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pour exécuter ce projet localement, assurez-vous d'avoir installé les outils suivants :
 
-## Laravel Sponsors
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)
+- [Git](https://git-scm.com/)
+- Un compte [FedaPay](https://fedapay.com/) avec des clés API (Sandbox ou Live)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Installation et Démarrage Local (Avec Docker)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Le projet utilise **Docker Compose** pour orchestrer à la fois l'application Laravel et une base de données **PostgreSQL** locale dédiée.
 
-## Contributing
+### 1. Cloner le projet
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+git clone https://github.com/Eunock-web/EscrowTest.git
+cd EscrowTest
+```
 
-## Code of Conduct
+### 2. Configurer l'Environnement
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Dupliquez le fichier de configuration :
 
-## Security Vulnerabilities
+```bash
+cp .env.example .env
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Ouvrez le fichier `.env` et ajoutez-y vos clés API FedaPay :
 
-## License
+```env
+FEDAPAY_PUBLIC_KEY="pk_sandbox_votre_cle_publique"
+FEDAPAY_SECRET_KEY="sk_sandbox_votre_cle_secrete"
+FEDAPAY_ENVIRONMENT="sandbox" # ou "live" en production
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 3. Démarrer les services Docker
+
+Construisez et démarrez les conteneurs (l'application + la base de données PostgreSQL) :
+
+```bash
+docker-compose up -d --build
+```
+
+> Le premier démarrage prendra quelques minutes le temps d'installer les dépendances `composer` et `npm` contenues dans le `Dockerfile`.
+
+### 4. Finaliser la configuration
+
+Exécutez cette commande pour générer la clé d'application et jouer les migrations de la base de données :
+
+```bash
+docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan migrate --seed
+docker-compose exec app php artisan storage:link
+```
+
+🌍 L'application est maintenant disponible sur : **[http://localhost:8000](http://localhost:8000)**
+
+---
+
+## ☁️ Déploiement en Production sur Render
+
+Le dépôt inclut la configuration nécessaire pour un déploiement fluide sur [Render](https://render.com/). Le fichier `render.yaml` (Blueprint) permet de déployer une application Web Dockerisée ainsi qu'une base de données PostgreSQL gérée automatiquement.
+
+### Étapes de déploiement (En 1-clic) :
+
+1. Créez un compte sur [Render](https://render.com/).
+2. Dans le Dashboard Render, cliquez sur **"New"** -> **"Blueprint"**.
+3. Liez votre dépôt GitHub `Eunock-web/EscrowTest`.
+4. Render détectera automatiquement le fichier `render.yaml` à la racine.
+5. Render vous demandera de remplir les variables d'environnement manquantes :
+    - `FEDAPAY_PUBLIC_KEY`
+    - `FEDAPAY_SECRET_KEY`
+6. Cliquez sur **Apply**. Render va provisionner :
+    - Une Base de données PostgreSQL.
+    - Un Service Web basé sur le `Dockerfile` fourni.
+    - Les variables se connecteront automatiquement grâce au fichier Blueprint.
+
+> **Note d'Architecture :** Dans un environnement de production (comme Render), il est recommandé de séparer le service applicatif (PHP) du service de base de données. C'est pourquoi le `Dockerfile` n'inclut que le serveur applicatif avec l'extension PDO Postgres, tandis que Render provisionne une base propre à côté.
+
+---
+
+## 📂 Structure Docker du Projet
+
+- **`Dockerfile`** : Configure `php:8.2-apache` avec toutes les dépendances nécessaires (PDO Postgres, GD, Node.js pour Vite). Exécute également `composer install` et `npm run build`.
+- **`docker-compose.yml`** : Fichier pour le développement local. Démarre l'application et un conteneur PostgreSQL (`pixelvault-db`).
+- **`docker-entrypoint.sh`** : Script d'amorçage qui gère dynamiquement le port HTTP exigé par Render, et exécute automatiquement les migrations (`php artisan migrate --force`) lors du lancement du conteneur en production.
+- **`render.yaml`** : Fichier IaC (Infrastructure as Code) permettant la mise en ligne simplifiée de l'infrastructure sur Render.
+
+---
+
+<div align="center">
+  <i>Développé avec passion pour sécuriser les transactions de biens numériques.</i>
+</div>
