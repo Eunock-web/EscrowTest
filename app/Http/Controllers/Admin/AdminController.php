@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -67,23 +67,23 @@ class AdminController extends Controller
 
         // Monthly sales data (Revenue)
         $monthlyRevenue = Sale::select(
-            DB::raw("SUM(amount) as total"),
+            DB::raw('SUM(amount) as total'),
             DB::raw("TO_CHAR(created_at, 'Month') as month"),
-            DB::raw("EXTRACT(MONTH FROM created_at) as month_num")
+            DB::raw('EXTRACT(MONTH FROM created_at) as month_num')
         )
-        ->groupBy('month', 'month_num')
-        ->orderBy('month_num')
-        ->get();
+            ->groupBy('month', 'month_num')
+            ->orderBy('month_num')
+            ->get();
 
         // User growth (Monthly registration)
         $userGrowth = User::select(
-            DB::raw("COUNT(*) as count"),
+            DB::raw('COUNT(*) as count'),
             DB::raw("TO_CHAR(created_at, 'Month') as month"),
-            DB::raw("EXTRACT(MONTH FROM created_at) as month_num")
+            DB::raw('EXTRACT(MONTH FROM created_at) as month_num')
         )
-        ->groupBy('month', 'month_num')
-        ->orderBy('month_num')
-        ->get();
+            ->groupBy('month', 'month_num')
+            ->orderBy('month_num')
+            ->get();
 
         // Categoriy Distribution
         $categoryDistribution = Product::select('categories.categorie as nom', DB::raw('count(*) as count'))
@@ -92,5 +92,57 @@ class AdminController extends Controller
             ->get();
 
         return view('Admin.analytics', compact('stats', 'monthlyRevenue', 'userGrowth', 'categoryDistribution'));
+    }
+
+    /**
+     * Show the form for editing a user.
+     */
+    public function editUser(User $user)
+    {
+        return view('Admin.edit_user', compact('user'));
+    }
+
+    /**
+     * Update the specified user in storage.
+     */
+    public function updateUser(Request $request, User $user)
+    {
+        $validatedData = $request->validate([
+            'pseudo' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|in:client,createur,admin',
+            'description' => 'nullable|string',
+        ]);
+
+        $user->update($validatedData);
+
+        return redirect()->route('admin.users')->with('success', 'Utilisateur mis à jour avec succès.');
+    }
+
+    /**
+     * Show the form for editing a product.
+     */
+    public function editProduct(Product $product)
+    {
+        $categories = \App\Models\Category::all();
+        return view('Admin.edit_product', compact('product', 'categories'));
+    }
+
+    /**
+     * Update the specified product in storage.
+     */
+    public function updateProduct(Request $request, Product $product)
+    {
+        $validatedData = $request->validate([
+            'nom' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'prix' => 'required|numeric|min:0',
+            'categorie_id' => 'required|exists:categories,id',
+            'url_image' => 'nullable|url',  // Assuming admins can set direct URLs or it is handled via upload elsewhere
+        ]);
+
+        $product->update($validatedData);
+
+        return redirect()->route('admin.products')->with('success', 'Produit mis à jour avec succès.');
     }
 }

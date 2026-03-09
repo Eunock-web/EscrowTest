@@ -43,7 +43,7 @@
                             <p class="text-xs text-slate-400 max-w-xs truncate">{{ $user->description ?? 'N/A' }}</p>
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button class="text-xs font-bold text-slate-500 hover:text-white transition-colors">Éditer</button>
+                            <a href="{{ route('admin.users.edit', $user->id) }}" class="text-xs font-bold text-slate-500 hover:text-white transition-colors">Éditer</a>
                         </td>
                     </tr>
                 @endforeach

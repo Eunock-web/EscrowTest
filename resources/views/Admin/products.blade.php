@@ -43,8 +43,13 @@
                         <td class="px-6 py-4">
                             <p class="text-sm font-bold text-emerald-400">{{ number_format($product->prix, 2) }}€</p>
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="text-xs font-bold text-red-500/80 hover:text-red-500 transition-colors">Supprimer</button>
+                        <td class="px-6 py-4 text-right flex justify-end gap-3">
+                            <a href="{{ route('admin.products.edit', $product->id) }}" class="text-xs font-bold text-slate-500 hover:text-white transition-colors">Éditer</a>
+                            <form action="{{ route('deleteProduct', $product->id) }}" method="POST" class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-xs font-bold text-red-500/80 hover:text-red-500 transition-colors">Supprimer</button>
+                            </form>
                         </td>
                     </tr>
                 @endforeach

@@ -35,7 +35,7 @@
         <!-- Left: Image -->
         <div class="product-img-container">
             @if($product->url_image)
-                <img src="{{ asset('storage/' . $product->url_image) }}" alt="{{ $product->nom }}" class="w-full h-full object-cover">
+                <img src="{{ Str::startsWith($product->url_image, ['http://', 'https://']) ? $product->url_image : asset('storage/' . $product->url_image) }}" alt="{{ $product->nom }}" class="w-full h-full object-cover">
             @else
                 <svg class="w-24 h-24 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -58,11 +58,30 @@
                     <span class="text-slate-400">Prix</span>
                     <span class="text-3xl font-800 text-white">{{ number_format($product->prix, 2) }}€</span>
                 </div>
-                <!-- Button for FedaPay integration (User requested to handle it) -->
-                <button class="w-full btn-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-16M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    Acheter maintenant
-                </button>
+                {{-- Bouton d'achat contextualisé --}}
+                @auth
+                    @if(Auth::user()->role === 'client')
+                        <a href="{{ route('client.checkout', $product->id) }}"
+                           class="w-full btn-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90 hover:-translate-y-0.5">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-16M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Acheter maintenant
+                        </a>
+                    @else
+                        <span class="w-full block text-center py-4 rounded-xl font-bold text-slate-500 bg-white/5 border border-white/5 cursor-not-allowed select-none text-sm">
+                            Compte client requis pour acheter
+                        </span>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                       class="w-full btn-primary text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Se connecter pour acheter
+                    </a>
+                @endauth
             </div>
 
             <div class="space-y-6">

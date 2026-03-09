@@ -57,6 +57,10 @@ Route::middleware(['auth', 'user.client'])->group(function () {
     Route::get('/mes-achats', [ClientController::class, 'purchases'])->name('client.purchases');
     Route::get('/buy/{productId}', [ClientController::class, 'collecte'])->name('client.initTransaction');
     Route::get('/callback', [ClientController::class, 'callback'])->name('client.callback');
+
+    // Custom embedded checkout (checkout.js — sans redirection)
+    Route::get('/pay/{productId}', [ClientController::class, 'showCheckout'])->name('client.checkout');
+    Route::post('/pay/initiate', [ClientController::class, 'initiateCheckout'])->name('client.checkout.initiate')->middleware('throttle:10,1');
 });
 
 // Routes publiques / mixtes
@@ -79,9 +83,17 @@ Route::prefix('admin')->group(function () {
 Route::middleware(['auth', 'user.admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/analytics', [AdminController::class, 'analytics'])->name('admin.analytics');
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
     Route::get('/payouts', [AdminController::class, 'payouts'])->name('admin.payouts');
+
+    // Users Management
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('admin.users.edit');
+    Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('admin.users.update');
+
+    // Products Management
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::get('/products/{product}/edit', [AdminController::class, 'editProduct'])->name('admin.products.edit');
+    Route::put('/products/{product}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
 });
 
 // Route pour la gestion du webhook
